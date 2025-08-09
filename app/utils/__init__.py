@@ -1,4 +1,4 @@
-from .save_file import save_product_image, save_category_image
+from .save_file import save_product_image, save_category_image, delete_media_file
 from .hash_verify_pwd import hash_pwd, verify_pwd
 from .email_token import create_verification_url, verify_email_token
 from .send_email import send_email

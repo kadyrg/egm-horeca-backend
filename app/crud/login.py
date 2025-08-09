@@ -2,12 +2,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Response, HTTPException
 from sqlalchemy import select
 
+from app.schemas import StatusRes
 from app.schemas.login import Login
 from app.models import User
 from app.utils import generate_refresh_token, generate_access_token, verify_pwd
 
 
-async def login(login_in: Login, res: Response, session: AsyncSession):
+async def login(login_in: Login, res: Response, session: AsyncSession) -> StatusRes:
     stmt = select(User).where(User.email == login_in.email, User.is_active, User.is_verified == True)
     result = await session.execute(stmt)
     user = result.scalar_one_or_none()
@@ -36,4 +37,4 @@ async def login(login_in: Login, res: Response, session: AsyncSession):
         path='/'
     )
     await session.commit()
-    return
+    return StatusRes(status="success", message="Login successful")

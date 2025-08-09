@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     access_token_validity: int = 15 # minutes
     refresh_token_validity: int = 30 # days
 
+    base_url: Path = BASE_DIR
     media_url: Path = BASE_DIR / "media"
 
     @property

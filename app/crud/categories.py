@@ -4,8 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from fastapi import HTTPException
 from math import ceil
+from slugify import slugify
 
-from app.utils import save_category_image
+from app.utils import save_category_image, delete_media_file
 from app.schemas import StatusRes, CategoryList, CategoryDetail, ProductList, Products, CategoryBase
 from app.models import Category, Product, Conf, ConfType
 
@@ -15,6 +16,8 @@ async def add_category(name_en: str, name_ro: str, image: UploadFile, session: A
     category = Category(
         name_en=name_en,
         name_ro=name_ro,
+        slug_en=slugify(name_en),
+        slug_ro=slugify(name_ro),
         image=save_category_image(image_bytes)
     )
     session.add(category)
@@ -44,6 +47,32 @@ async def get_categories_admin(lang: str, session: AsyncSession) -> List[Categor
             name=getattr(category, f"name_{lang}", category.name_en)
         ) for category in categories
     ]
+
+
+async def update_category(
+        category_id: int,
+        name_en: str | None,
+        name_ro: str | None,
+        image: UploadFile | None,
+        session: AsyncSession,
+):
+    stmt = select(Category).where(Category.id == category_id)
+    result = await session.execute(stmt)
+    category = result.scalar_one_or_none()
+    if category is None:
+        raise HTTPException(status_code=404, detail="Category not found")
+    if name_en is not None:
+        category.name_en = name_en
+        category.slug_en = slugify(name_en)
+    if name_ro is not None:
+        category.name_ro = name_ro
+        category.slug_ro = slugify(name_ro)
+    if image is not None:
+        image_bytes = await image.read()
+        delete_media_file(category.image)
+        category.image = save_category_image(image_bytes)
+    await session.commit()
+    return StatusRes(status="success", message="Category updated")
 
 
 async def get_category(slug: str, language: str, session: AsyncSession) -> CategoryDetail:

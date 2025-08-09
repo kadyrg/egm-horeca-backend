@@ -1,3 +1,5 @@
+import os
+
 from PIL import Image, ImageOps
 from io import BytesIO
 import uuid
@@ -49,3 +51,8 @@ def save_category_image(image_bytes: bytes) -> str:
     filepath = settings.media_url / "categories" / filename
     img.save(filepath, format="WEBP", quality=100)
     return f"/media/categories/{filename}"
+
+
+def delete_media_file(filepath: str):
+    full_path = settings.base_url / filepath
+    os.remove(full_path)
