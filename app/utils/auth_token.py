@@ -32,7 +32,6 @@ def generate_refresh_token(user: User) -> str:
 def decode_access_token(token: str) -> Tuple[int, str]:
     try:
         payload = jwt.decode(token, settings.access_token_secret, algorithms=[settings.jwt_algorithm])
-        print(payload)
         if payload.get('type') != 'access':
             raise HTTPException(status_code=401, detail='Invalid token type')
         user_id_raw = payload.get('sub')

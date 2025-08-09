@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from typing import Annotated
 
 
-class _Category(BaseModel):
+class CategoryBase(BaseModel):
     id: int
     name: str
 

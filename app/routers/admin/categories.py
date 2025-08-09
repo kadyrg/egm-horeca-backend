@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_db_session
 from app.models import User
-from app.schemas import StatusRes, _Category
+from app.schemas import StatusRes, CategoryBase
 from app.crud import add_category, get_categories_admin
 from app.deps import get_admin_user, lang_dep
 
@@ -22,7 +22,7 @@ async def _add_category(
     return await add_category(name_en, name_ro, image, session)
 
 
-@router.get("", response_model=List[_Category])
+@router.get("", response_model=List[CategoryBase])
 async def _get_categories_admin(
         lang: str = Depends(lang_dep),
         admin_user: User = Depends(get_admin_user),

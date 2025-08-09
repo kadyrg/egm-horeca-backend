@@ -13,6 +13,15 @@ from app.utils import decode_access_token, decode_refresh_token
 
 security = HTTPBearer()
 
+
+
+async def check_admin(user_id: int, session: AsyncSession = Depends(get_db_session)) -> User:
+    result = await session.execute(select(User).where(User.id == user_id, User.role == UserRole.admin))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found or not admin")
+    return user
+
 async def get_admin_user(
         request: Request,
         session: AsyncSession = Depends(get_db_session)
@@ -23,31 +32,15 @@ async def get_admin_user(
     user_id, role = decode_access_token(token)
     if role != UserRole.admin:
         raise HTTPException(status_code=403, detail="Admin privileges required")
-    result = await session.execute(select(User).where(User.id == user_id, User.role == UserRole.admin))
-    user = result.scalar_one_or_none()
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found or not admin")
-    return user
+    return await check_admin(user_id, session)
 
 
 async def refresh_admin_user(
-        credentials: Optional[HTTPAuthorizationCredentials] = Security(security),
+        request: Request,
         session: AsyncSession = Depends(get_db_session)
 ):
-    if not credentials:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    token = credentials.credentials
-    try:
-        user_id, role = decode_refresh_token(token)
-    except HTTPException:
-        raise
+    token = request.cookies.get("refreshToken")
+    user_id, role = decode_refresh_token(token)
     if role != UserRole.admin:
         raise HTTPException(status_code=403, detail="Admin privileges required")
-    try:
-        result = await session.execute(select(User).where(User.id == user_id, User.role == UserRole.admin))
-        user = result.scalar_one_or_none()
-        if not user:
-            raise HTTPException(status_code=401, detail="User not found or not admin")
-        return user
-    except NoResultFound:
-        raise HTTPException(status_code=401, detail="User not found or not admin")
+    return await check_admin(user_id, session)

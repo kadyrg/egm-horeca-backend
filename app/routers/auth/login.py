@@ -5,6 +5,7 @@ from app.db import get_db_session
 from app.schemas import Login
 from app.crud import login
 
+
 router = APIRouter(prefix='/login', tags=['Login'])
 
 @router.post('')
