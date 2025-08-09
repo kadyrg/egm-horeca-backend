@@ -1,5 +1,5 @@
 from .statuses import StatusRes
-from .categories import CategoryBase, CategoryList, CategoryDetail
+from .categories import CategoryAdminList, CategoryList, CategoryDetail
 from .products import ProductList, Products, ProductDetail, ProductDetailAll
 from .login import Login
 from .register import Register, RegisterResponse
@@ -8,7 +8,7 @@ from .metadata import RootLayout, HomePage, ProductPage, RegisterPage, VerifyEma
 
 __all__ = [
     'StatusRes',
-    'CategoryBase', "CategoryList", 'CategoryDetail',
+    'CategoryAdminList', "CategoryList", 'CategoryDetail',
     'ProductList', 'Products', 'ProductDetail', 'ProductDetailAll',
     'Login',
     'Register', 'RegisterResponse',

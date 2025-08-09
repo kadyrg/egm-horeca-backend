@@ -2,9 +2,10 @@ from pydantic import BaseModel, ConfigDict, Field
 from typing import Annotated
 
 
-class CategoryBase(BaseModel):
+class CategoryAdminList(BaseModel):
     id: int
-    name: str
+    name_en: str
+    name_ro: str
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 

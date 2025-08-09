@@ -7,7 +7,7 @@ from math import ceil
 from slugify import slugify
 
 from app.utils import save_category_image, delete_media_file
-from app.schemas import StatusRes, CategoryList, CategoryDetail, ProductList, Products, CategoryBase
+from app.schemas import StatusRes, CategoryList, CategoryDetail, ProductList, Products, CategoryAdminList
 from app.models import Category, Product, Conf, ConfType
 
 
@@ -38,13 +38,14 @@ async def get_categories(language: str, session: AsyncSession) -> List[CategoryL
     ]
 
 
-async def get_categories_admin(lang: str, session: AsyncSession) -> List[CategoryBase]:
+async def get_categories_admin(session: AsyncSession) -> List[CategoryAdminList]:
     result = await session.execute(select(Category))
     categories = result.scalars().all()
     return [
-        CategoryBase(
+        CategoryAdminList(
             id=category.id,
-            name=getattr(category, f"name_{lang}", category.name_en)
+            name_en=category.name_en,
+            name_ro=category.name_ro,
         ) for category in categories
     ]
 
