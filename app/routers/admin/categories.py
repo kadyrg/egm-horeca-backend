@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Form, UploadFile, File, Depends
-from typing import Annotated
+from typing import Annotated, List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_db_session
 from app.models import User
-from app.schemas import StatusRes
-from app.crud import add_category
-from app.deps import get_admin_user
+from app.schemas import StatusRes, _Category
+from app.crud import add_category, get_categories_admin
+from app.deps import get_admin_user, lang_dep
 
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
@@ -20,3 +20,12 @@ async def _add_category(
         session: AsyncSession = Depends(get_db_session),
 ):
     return await add_category(name_en, name_ro, image, session)
+
+
+@router.get("", response_model=List[_Category])
+async def _get_categories_admin(
+        lang: str = Depends(lang_dep),
+        admin_user: User = Depends(get_admin_user),
+        session: AsyncSession = Depends(get_db_session),
+):
+    return await get_categories_admin(lang, session)

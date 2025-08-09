@@ -180,4 +180,25 @@ async def randomize_price(
     await session.commit()
     return "Finished"
 
+@router.post("/price")
+async def add_category_images(
+        session: AsyncSession = Depends(get_db_session),
+):
+    result = await session.execute(select(Product))
+    products = result.scalars().all()
+    for product in products:
+        product.price = 40.99
+    await session.commit()
+    return "Finished"
+
+@router.post("/get_admin_token")
+async def get_admin_token(
+        session: AsyncSession = Depends(get_db_session),
+):
+    user = U
+    products = result.scalars().all()
+    for product in products:
+        product.price = round(random.uniform(1, 9999), 2)
+    await session.commit()
+    return "Finished"
 

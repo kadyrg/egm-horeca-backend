@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from math import ceil
 
 from app.utils import save_category_image
-from app.schemas import StatusRes, CategoryList, CategoryDetail, ProductList, Products
+from app.schemas import StatusRes, CategoryList, CategoryDetail, ProductList, Products, _Category
 from app.models import Category, Product, Conf, ConfType
 
 
@@ -31,6 +31,17 @@ async def get_categories(language: str, session: AsyncSession) -> List[CategoryL
             id=category.id,
             name=getattr(category, f"name_{language}", category.name_en),
             slug=getattr(category, f"slug_{language}", category.slug_en)
+        ) for category in categories
+    ]
+
+
+async def get_categories_admin(lang: str, session: AsyncSession) -> List[_Category]:
+    result = await session.execute(select(Category))
+    categories = result.scalars().all()
+    return [
+        _Category(
+            id=category.id,
+            name=getattr(category, f"name_{lang}", category.name_en)
         ) for category in categories
     ]
 
@@ -63,6 +74,9 @@ async def get_category(slug: str, language: str, session: AsyncSession) -> Categ
         total_products=total_products,
         total_pages=total_pages,
     )
+
+
+
 
 
 async def get_category_products(slug: str, language: str, page: int, session: AsyncSession) -> Products:

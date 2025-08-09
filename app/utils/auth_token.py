@@ -10,7 +10,7 @@ from app.models import User
 def generate_access_token(user: User) -> str:
     expire = datetime.now(timezone.utc) + (timedelta(minutes=settings.access_token_validity))
     payload = {
-        'sub': user.id,
+        'sub': str(user.id),
         'role': user.role,
         'type': 'access',
         'exp': expire,
@@ -21,7 +21,7 @@ def generate_access_token(user: User) -> str:
 def generate_refresh_token(user: User) -> str:
     expire = datetime.now(timezone.utc) + (timedelta(minutes=settings.refresh_token_validity))
     payload = {
-        'sub': user.id,
+        'sub': str(user.id),
         'role': user.role,
         'type': 'refresh',
         'exp': expire,
@@ -32,12 +32,17 @@ def generate_refresh_token(user: User) -> str:
 def decode_access_token(token: str) -> Tuple[int, str]:
     try:
         payload = jwt.decode(token, settings.access_token_secret, algorithms=[settings.jwt_algorithm])
+        print(payload)
         if payload.get('type') != 'access':
             raise HTTPException(status_code=401, detail='Invalid token type')
-        user_id = payload.get('sub')
+        user_id_raw = payload.get('sub')
         role = payload.get('role')
-        if user_id is None or role is None:
+        if user_id_raw is None or role is None:
             raise HTTPException(status_code=401, detail='Invalid token payload')
+        try:
+            user_id = int(user_id_raw)
+        except (TypeError, ValueError):
+            raise HTTPException(status_code=401, detail='Invalid user ID in token')
         return user_id, role
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail='Expired token')

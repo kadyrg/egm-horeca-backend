@@ -4,10 +4,7 @@ from typing import Annotated
 
 class _Category(BaseModel):
     id: int
-    name_en: Annotated[str, Field(..., alias='nameEn')]
-    name_ro: Annotated[str, Field(..., alias='nameRo')]
-    slug: str
-    image: str
+    name: str
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
