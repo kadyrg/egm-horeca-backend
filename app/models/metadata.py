@@ -6,7 +6,12 @@ from .base import Base
 
 
 class MetaDataGroup(str, Enum):
+    root_layout = "root_layout"
+    home_page = "home_page"
+
+
     messages_en = "messages_en"
+
     homepage = "homepage"
     product_page = "product_page"
     register_page = "register_page"

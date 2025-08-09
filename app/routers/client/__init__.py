@@ -1,12 +1,12 @@
-from fastapi import APIRouter
+from fastapi import FastAPI
 
-from .metadata.views import router as features_router
-from .categories.views import router as categories_router
-from .products.views import router as products_router
+from .metadata import router as features_router
+from .categories import router as categories_router
+from .products import router as products_router
 
 
-router = APIRouter()
+client = FastAPI(title='EGM Horeca Client')
 
-router.include_router(features_router)
-router.include_router(categories_router)
-router.include_router(products_router)
+client.include_router(features_router)
+client.include_router(categories_router)
+client.include_router(products_router)

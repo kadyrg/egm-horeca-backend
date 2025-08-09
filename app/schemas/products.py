@@ -3,7 +3,7 @@ from typing import List, Annotated
 from decimal import Decimal
 from datetime import datetime
 
-from .categories import Category
+from .categories import CategoryList
 
 
 class Product(BaseModel):
@@ -32,7 +32,7 @@ class ProductDetail(BaseModel):
     description: str
     image: str
     price: Decimal
-    category: Category
+    category: CategoryList
 
 class ProductDetailAll(BaseModel):
     id: int

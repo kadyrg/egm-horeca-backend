@@ -1,4 +1,8 @@
-from fastapi import APIRouter
+from fastapi import FastAPI
+
+from .categories import router as categories_router
 
 
-router = APIRouter()
+admin = FastAPI(title="EGM Horeca | Admin")
+
+admin.include_router(categories_router)

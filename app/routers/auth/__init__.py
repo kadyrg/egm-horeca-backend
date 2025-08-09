@@ -1,12 +1,14 @@
-from fastapi import APIRouter
+from fastapi import FastAPI
 
-from .login.views import router as login_router
-from .register.views import router as register_router
-from .verify.views import router as verify_router
+from .login import router as login_router
+from .register import router as register_router
+from .verify import router as verify_router
+from .refresh import router as refresh_router
 
 
-router = APIRouter()
+auth = FastAPI(title="EGM Horeca | Authentication")
 
-router.include_router(login_router)
-router.include_router(register_router)
-router.include_router(verify_router)
+auth.include_router(login_router)
+auth.include_router(register_router)
+auth.include_router(verify_router)
+auth.include_router(refresh_router)

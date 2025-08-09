@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
+from typing import List
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -24,6 +25,8 @@ class Settings(BaseSettings):
 
     access_token_secret: str
     refresh_token_secret: str
+
+    supported_languages: List[str] = {"en", "ro"}
 
     jwt_algorithm: str = "HS256"
 
