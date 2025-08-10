@@ -32,6 +32,13 @@ class ProductListAdmin(BaseModel):
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
 
+class ProductCreate(BaseModel):
+    name: str
+    description: str
+    image: str
+    slug: str
+
+
 class ProductDetail(BaseModel):
     id: int
     name: str

@@ -4,8 +4,11 @@ from typing import List
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.models import Product, Conf, ConfType
-from app.schemas import ProductList, ProductDetail, CategoryList, ProductDetailAll, ProductListAdmin, CategoryAdminList
+from app.models import Product, Conf, ConfType, ProductExtraImages
+from app.schemas import ProductList, ProductDetail, CategoryList, ProductDetailAll, ProductListAdmin, CategoryAdminList, \
+    StatusRes
+from app.deps import ProductCreate
+from app.utils import save_product_image
 
 
 async def get_products(session: AsyncSession) -> List[ProductDetailAll]:
@@ -35,6 +38,37 @@ async def get_products_admin(session: AsyncSession) -> List[ProductListAdmin]:
     result = await session.execute(select(Product).options(selectinload(Product.category)).order_by(Product.id.desc()))
     products = result.scalars().all()
     return [ProductListAdmin.model_validate(product) for product in products]
+
+
+async def add_product(product_in: ProductCreate, session: AsyncSession) -> StatusRes:
+    image_bytes = await product_in.image.read()
+    image_path = save_product_image(image_bytes)
+    product = Product(
+        name_ro=product_in.name_ro,
+        name_en=product_in.name_en,
+        description_ro=product_in.description_ro,
+        description_en=product_in.description_en,
+        category_id=product_in.category_id,
+        price=product_in.price,
+        stock=product_in.stock,
+        status=product_in.status,
+        slug_en = product_in.slug_en,
+        slug_ro = product_in.slug_ro,
+        image=image_path,
+    )
+    session.add(product)
+    await session.flush()
+    for extra_image in product_in.extra_images:
+        extra_image_bytes = await extra_image.extra_image.read()
+        extra_image_path = save_product_image(extra_image_bytes)
+        product_extra_image = ProductExtraImages(
+            order=extra_image.order,
+            image=extra_image_path,
+            product_id=product.id,
+        )
+        session.add(product_extra_image)
+    await session.commit()
+    return StatusRes(status="success", message="Product added successfully")
 
 
 async def get_new_products(language: str, session: AsyncSession) -> List[ProductList]:

@@ -7,7 +7,7 @@ import uuid
 from app.core import settings
 
 
-async def save_product_image(image_bytes: bytes) -> str:
+def save_product_image(image_bytes: bytes) -> str:
     img = Image.open(BytesIO(image_bytes))
     target_width, target_height = 840, 1008
     img = ImageOps.fit(

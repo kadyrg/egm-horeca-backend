@@ -1,13 +1,14 @@
 from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, DateTime, Numeric
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from decimal import Decimal
 
 from .base import Base
 
 if TYPE_CHECKING:
     from .categories import Category
+    from .product_extra_images import ProductExtraImages
 
 
 class Product(Base):
@@ -27,3 +28,4 @@ class Product(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     stock: Mapped[int] = mapped_column(default=0, nullable=False)
     status: Mapped[bool] = mapped_column(default=True, nullable=True)
+    extra_images: Mapped[List["ProductExtraImages"]] = relationship("ProductExtraImages", back_populates="product")
