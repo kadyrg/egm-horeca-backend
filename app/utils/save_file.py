@@ -55,4 +55,7 @@ def save_category_image(image_bytes: bytes) -> str:
 
 def delete_media_file(filepath: str):
     full_path = settings.base_url / filepath
-    os.remove(full_path)
+    try:
+        os.remove(full_path)
+    except:
+        pass

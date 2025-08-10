@@ -24,7 +24,7 @@ async def _get_categories_admin(
 ):
     return await get_categories_admin(session)
 
-@router.put("/{category_id}", response_model=StatusRes)
+@router.patch("/{category_id}", response_model=StatusRes)
 async def _update_category(
         category_id: int,
         name_en: Annotated[str | None, Form(alias="nameEn", min_length=2, max_length=50)] = None,
