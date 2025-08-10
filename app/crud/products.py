@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from app.models import Product, Conf, ConfType
-from app.schemas import ProductList, ProductDetail, CategoryList, ProductDetailAll
+from app.schemas import ProductList, ProductDetail, CategoryList, ProductDetailAll, ProductListAdmin, CategoryAdminList
 
 
 async def get_products(session: AsyncSession) -> List[ProductDetailAll]:
@@ -29,6 +29,12 @@ async def get_top_products(language: str, session: AsyncSession) -> List[Product
             slug=getattr(product, f"slug_{language}", product.slug_en)
         ) for product in products
     ]
+
+
+async def get_products_admin(session: AsyncSession) -> List[ProductListAdmin]:
+    result = await session.execute(select(Product).options(selectinload(Product.category)).order_by(Product.id.desc()))
+    products = result.scalars().all()
+    return [ProductListAdmin.model_validate(product) for product in products]
 
 
 async def get_new_products(language: str, session: AsyncSession) -> List[ProductList]:

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import client_router, admin_app
+from .routers.helper import router as helper_router
 
 
 app = FastAPI(
@@ -21,4 +22,5 @@ app.add_middleware(
 )
 
 app.include_router(client_router)
+app.include_router(helper_router)
 app.mount("/admin", admin_app)

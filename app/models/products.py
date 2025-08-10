@@ -25,3 +25,5 @@ class Product(Base):
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False)
     category: Mapped["Category"] = relationship("Category", back_populates="products")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    stock: Mapped[int] = mapped_column(default=0, nullable=False)
+    status: Mapped[bool] = mapped_column(default=True, nullable=True)

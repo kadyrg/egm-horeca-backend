@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Annotated
+from typing import Annotated
 from decimal import Decimal
 from datetime import datetime
 
-from .categories import CategoryList
+from .categories import CategoryList, CategoryAdminList
 
 
 class Product(BaseModel):
@@ -13,8 +13,24 @@ class Product(BaseModel):
     slug: str
     price: Decimal
 
+
 class ProductList(Product):
     id: int
+
+
+
+
+class ProductListAdmin(BaseModel):
+    id: int
+    name_en: Annotated[str, Field(alias="nameEn")]
+    name_ro: Annotated[str, Field(alias="nameRo")]
+    price: Decimal
+    category: CategoryAdminList
+    stock: int
+    status: bool
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
 
 class ProductDetail(BaseModel):
     id: int

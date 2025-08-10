@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from .categories import router as categories_router
+from .products import router as products_router
 
 
 app = FastAPI(
@@ -12,3 +13,4 @@ app = FastAPI(
 )
 
 app.include_router(categories_router)
+app.include_router(products_router)
