@@ -16,16 +16,6 @@ class Product(BaseModel):
 class ProductList(Product):
     id: int
 
-
-class Products(BaseModel):
-    total_pages: Annotated[int, Field(..., alias="totalPages")]
-    current_page: Annotated[int, Field(..., alias="currentPage")]
-    total_products: Annotated[int, Field(..., alias="totalProducts")]
-    products: List[ProductList]
-
-    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
-
-
 class ProductDetail(BaseModel):
     id: int
     name: str

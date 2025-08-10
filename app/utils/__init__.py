@@ -7,7 +7,7 @@ from .auth_token import generate_access_token, generate_refresh_token, decode_ac
 
 
 __all__ = [
-    'save_product_image', 'save_category_image',
+    'save_product_image', 'save_category_image', 'delete_media_file',
     'hash_pwd', 'verify_pwd',
     'create_verification_url', 'verify_email_token',
     'send_email',

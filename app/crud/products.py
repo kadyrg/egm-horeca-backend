@@ -8,7 +8,7 @@ from app.models import Product, Conf, ConfType
 from app.schemas import ProductList, ProductDetail, CategoryList, ProductDetailAll
 
 
-async def get_products(language: str, session: AsyncSession) -> List[ProductDetailAll]:
+async def get_products(session: AsyncSession) -> List[ProductDetailAll]:
     stmt = select(Product)
     result = await session.execute(stmt)
     products = result.scalars().all()

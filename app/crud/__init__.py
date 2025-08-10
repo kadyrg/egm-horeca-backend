@@ -11,7 +11,7 @@ from .products import get_products, get_new_products, get_product, get_top_produ
 from .register import register
 from .verify import verify_email
 from .refresh import refresh
-
+from .metadata import get_metadata
 
 
 __all__ = [
@@ -21,5 +21,6 @@ __all__ = [
     'get_products', 'get_new_products', 'get_product', 'get_top_products',
     'register',
     'verify_email',
-    'refresh'
+    'refresh',
+    'get_metadata'
 ]

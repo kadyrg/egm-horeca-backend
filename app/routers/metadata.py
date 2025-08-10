@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
 from app.db import get_db_session
 from app.deps import lang_dep
-from app.models import MetaData, MetaDataGroup
+from app.models import MetaDataGroup
+from app.crud import get_metadata
 from app.schemas.metadata import (
     HomePage,
     ProductPage,
@@ -14,17 +14,12 @@ from app.schemas.metadata import (
 )
 
 
-async def get_metadata(language: str, group: MetaDataGroup, session: AsyncSession) -> dict:
-    stmt = select(MetaData).where(MetaData.type == group)
-    result = await session.execute(stmt)
-    page = result.scalar_one()
-    metadata = page.value.get(language, page.value.get('en'))
-    return metadata
+router = APIRouter(prefix='/metadata', tags=['Client: Metadata'])
 
-
-router = APIRouter(prefix='/metadata', tags=['Metadata'])
-
-@router.get('/root_layout', response_model=RootLayout)
+@router.get(
+    '/root_layout',
+    response_model=RootLayout
+)
 async def get_root_layout(
         lang: str = Depends(lang_dep),
         session: AsyncSession = Depends(get_db_session)
@@ -33,7 +28,10 @@ async def get_root_layout(
     return RootLayout.model_validate(metadata)
 
 
-@router.get('/home_page', response_model=HomePage)
+@router.get(
+    '/home_page',
+    response_model=HomePage
+)
 async def get_home_page(
         lang: str = Depends(lang_dep),
         session: AsyncSession = Depends(get_db_session)
@@ -42,7 +40,10 @@ async def get_home_page(
     return HomePage.model_validate(metadata)
 
 
-@router.get('/product_page', response_model=ProductPage)
+@router.get(
+    '/product_page',
+    response_model=ProductPage
+)
 async def get_product_page(
         lang: str = Depends(lang_dep),
         session: AsyncSession = Depends(get_db_session)
@@ -51,7 +52,10 @@ async def get_product_page(
     return ProductPage.model_validate(metadata)
 
 
-@router.get('/register_page', response_model=RegisterPage)
+@router.get(
+    '/register_page',
+    response_model=RegisterPage
+)
 async def get_register_page(
         lang: str = Depends(lang_dep),
         session: AsyncSession = Depends(get_db_session)
@@ -60,7 +64,10 @@ async def get_register_page(
     return RegisterPage.model_validate(metadata)
 
 
-@router.get('/verify_email_page', response_model=VerifyEmailPage)
+@router.get(
+    '/verify_email_page',
+    response_model=VerifyEmailPage
+)
 async def get_verify_email_page(
         lang: str = Depends(lang_dep),
         session: AsyncSession = Depends(get_db_session)

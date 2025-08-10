@@ -11,11 +11,8 @@ from app.deps import lang_dep
 router = APIRouter(prefix='/products', tags=['Products'])
 
 @router.get('', response_model=List[ProductDetailAll])
-async def _get_products(
-        lang: str = Depends(lang_dep),
-        session: AsyncSession = Depends(get_db_session)
-):
-    return await get_products(lang, session)
+async def _get_products(session: AsyncSession = Depends(get_db_session)):
+    return await get_products(session)
 
 
 @router.get('/top', response_model=List[ProductList])

@@ -4,8 +4,8 @@ from typing import Annotated
 
 class CategoryAdminList(BaseModel):
     id: int
-    name_en: str
-    name_ro: str
+    name_en: Annotated[str, Field(..., alias='nameEn')]
+    name_ro: Annotated[str, Field(..., alias='nameRo')]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 

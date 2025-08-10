@@ -1,20 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import client, media, helper, admin, auth
+from .routers import client_router, admin_app
 
-
-description = """
-    API endpoints:
-        client: /api/docs
-        admin: /admin/docs
-        media: /media/docs
-"""
 
 app = FastAPI(
     title="EGM Horeca",
-    summary="EGM Horeca API",
-    description=description
+    swagger_ui_parameters={
+        "defaultModelsExpandDepth": -1
+    },
+    redoc_url=None,
 )
 
 app.add_middleware(
@@ -25,8 +20,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/api", client)
-app.mount("/media", media)
-app.mount("/admin", admin)
-app.mount("/auth", auth)
-app.include_router(helper.router)
+app.include_router(client_router)
+app.mount("/admin", admin_app)

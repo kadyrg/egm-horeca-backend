@@ -1,12 +1,8 @@
-from .auth import auth
-from .media import media
-from .admin import admin
-from .client import client
+from .admin import app as admin_app
+from .client import router as client_router
 
 
 __all__ = [
-    'auth',
-    'media',
-    'admin',
-    'client',
+    'admin_app',
+    'client_router'
 ]

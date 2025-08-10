@@ -3,6 +3,12 @@ from fastapi import FastAPI
 from .categories import router as categories_router
 
 
-admin = FastAPI(title="EGM Horeca | Admin")
+app = FastAPI(
+    title='Admin',
+    prefix='/admin',
+    swagger_ui_parameters={
+        "defaultModelsExpandDepth": -1
+    },
+)
 
-admin.include_router(categories_router)
+app.include_router(categories_router)

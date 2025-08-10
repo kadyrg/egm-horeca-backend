@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, Query
+from typing import Annotated, List
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Annotated
 
 from app.db import get_db_session
+from app.schemas import CategoryList, CategoryDetail, ProductList
 from app.crud import get_categories, get_category, get_category_products
 from app.deps import lang_dep
-from app.schemas import CategoryList, CategoryDetail, Products
 
 
-router = APIRouter(prefix='/categories', tags=['Categories'])
+router = APIRouter(prefix='/categories', tags=['Client: Categories'])
 
 @router.get('', response_model=List[CategoryList])
 async def _get_categories(
@@ -16,7 +16,6 @@ async def _get_categories(
         session: AsyncSession = Depends(get_db_session)
 ):
     return await get_categories(lang, session)
-
 
 @router.get('/{slug}', response_model=CategoryDetail)
 async def _get_category(
@@ -26,8 +25,7 @@ async def _get_category(
 ):
     return await get_category(slug, lang, session)
 
-
-@router.get('/{slug}/products', response_model=Products)
+@router.get('/{slug}/products', response_model=List[ProductList])
 async def _get_category_products(
         slug: str,
         lang: str = Depends(lang_dep),
