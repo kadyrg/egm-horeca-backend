@@ -5,39 +5,17 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from app.models import Product, Conf, ConfType, ProductExtraImages
-from app.schemas import ProductList, ProductDetail, CategoryList, ProductDetailAll, ProductListAdmin, CategoryAdminList, \
-    StatusRes
-from app.deps import ProductCreate
+from app.schemas import (
+    ProductList,
+    ProductDetail,
+    CategoryList,
+    ProductDetailAll,
+    ProductListAdmin,
+    CategoryAdminList,
+    StatusRes,
+)
+from app.deps import ProductCreate, ProductUpdate
 from app.utils import save_product_image
-
-
-async def get_products(session: AsyncSession) -> List[ProductDetailAll]:
-    stmt = select(Product)
-    result = await session.execute(stmt)
-    products = result.scalars().all()
-    return [ProductDetailAll.model_validate(product) for product in products]
-
-
-async def get_top_products(language: str, session: AsyncSession) -> List[ProductList]:
-    stmt = select(Product)
-    result = await session.execute(stmt)
-    products = result.scalars().all()
-    return [
-        ProductList(
-            id=product.id,
-            name=getattr(product, f"name_{language}", product.name_en),
-            description=getattr(product, f"description_{language}", product.name_en),
-            image=product.image,
-            price=product.price,
-            slug=getattr(product, f"slug_{language}", product.slug_en)
-        ) for product in products
-    ]
-
-
-async def get_products_admin(session: AsyncSession) -> List[ProductListAdmin]:
-    result = await session.execute(select(Product).options(selectinload(Product.category)).order_by(Product.id.desc()))
-    products = result.scalars().all()
-    return [ProductListAdmin.model_validate(product) for product in products]
 
 
 async def add_product(product_in: ProductCreate, session: AsyncSession) -> StatusRes:
@@ -69,6 +47,35 @@ async def add_product(product_in: ProductCreate, session: AsyncSession) -> Statu
         session.add(product_extra_image)
     await session.commit()
     return StatusRes(status="success", message="Product added successfully")
+
+
+async def get_products_admin(session: AsyncSession) -> List[ProductListAdmin]:
+    result = await session.execute(select(Product).options(selectinload(Product.category)).order_by(Product.id.desc()))
+    products = result.scalars().all()
+    return [ProductListAdmin.model_validate(product) for product in products]
+
+
+async def get_products(session: AsyncSession) -> List[ProductDetailAll]:
+    stmt = select(Product)
+    result = await session.execute(stmt)
+    products = result.scalars().all()
+    return [ProductDetailAll.model_validate(product) for product in products]
+
+
+async def get_top_products(language: str, session: AsyncSession) -> List[ProductList]:
+    stmt = select(Product)
+    result = await session.execute(stmt)
+    products = result.scalars().all()
+    return [
+        ProductList(
+            id=product.id,
+            name=getattr(product, f"name_{language}", product.name_en),
+            description=getattr(product, f"description_{language}", product.name_en),
+            image=product.image,
+            price=product.price,
+            slug=getattr(product, f"slug_{language}", product.slug_en)
+        ) for product in products
+    ]
 
 
 async def get_new_products(language: str, session: AsyncSession) -> List[ProductList]:
@@ -112,3 +119,19 @@ async def get_product(slug: str, language: str, session: AsyncSession) -> Produc
             slug=getattr(product.category, f"slug_{language}", product.category.slug_en),
         )
     )
+
+
+async def update_product(product_id: int, product_in: ProductUpdate, session: AsyncSession) -> StatusRes:
+    result = await session.execute(select(Product).where(Product.id == product_id))
+    product = result.scalar_one_or_none()
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    product_data = product_in.dict(exclude_none=True)
+    for key, value in product_data.items():
+        setattr(product, key, value)
+    if product_in.image:
+        image_bytes = await product_in.image.read()
+        image_path = save_product_image(image_bytes)
+        product.image = image_path
+    await session.commit()
+    return StatusRes(status="success", message="Product updated")
