@@ -50,9 +50,15 @@ async def add_product(product_in: ProductCreate, session: AsyncSession) -> Statu
 
 
 async def get_product_admin(product_id: int, session: AsyncSession) -> ProductDetailAdmin:
-    stmt = (select(Product)
-            .where(Product.id == product_id)
-            .options(selectinload(Product.extra_images), selectinload(Product.category)))
+    stmt = (
+        select(Product).where(
+            Product.id == product_id
+        ).options(
+            selectinload(Product.extra_images),
+            selectinload(Product.category)
+        )
+    )
+
     result = await session.execute(stmt)
     product = result.scalar_one_or_none()
     if product is None:

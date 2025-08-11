@@ -23,7 +23,7 @@ async def _add_product(
     return await add_product(product_in, session)
 
 
-@router.post('/{product_id}', response_model=ProductDetailAdmin)
+@router.get('/{product_id}', response_model=ProductDetailAdmin)
 async def _get_product_admin(
         product_id: Annotated[int, Path(..., ge=1)],
         session: AsyncSession = Depends(get_db_session)
