@@ -9,6 +9,7 @@ from .categories import (
 from .login import login
 from .products import (
     get_products,
+    get_product_admin,
     get_new_products,
     get_product,
     get_top_products,
@@ -26,7 +27,7 @@ __all__ = [
     'add_category', 'get_categories', 'get_category', 'get_category_products',
     'get_categories_admin', 'update_category',
     'login',
-    'get_products', 'get_new_products', 'get_product', 'get_top_products', 'get_products_admin', 'add_product', 'update_product',
+    'get_products', 'get_product_admin', 'get_new_products', 'get_product', 'get_top_products', 'get_products_admin', 'add_product', 'update_product',
     'register',
     'verify_email',
     'refresh',

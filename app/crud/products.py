@@ -12,7 +12,7 @@ from app.schemas import (
     ProductDetailAll,
     ProductListAdmin,
     CategoryAdminList,
-    StatusRes,
+    StatusRes, ProductDetailAdmin,
 )
 from app.deps import ProductCreate, ProductUpdate
 from app.utils import save_product_image
@@ -47,6 +47,17 @@ async def add_product(product_in: ProductCreate, session: AsyncSession) -> Statu
         session.add(product_extra_image)
     await session.commit()
     return StatusRes(status="success", message="Product added successfully")
+
+
+async def get_product_admin(product_id: int, session: AsyncSession) -> ProductDetailAdmin:
+    stmt = (select(Product)
+            .where(Product.id == product_id)
+            .options(selectinload(Product.extra_images), selectinload(Product.category)))
+    result = await session.execute(stmt)
+    product = result.scalar_one_or_none()
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return ProductDetailAdmin.model_validate(product)
 
 
 async def get_products_admin(session: AsyncSession) -> List[ProductListAdmin]:

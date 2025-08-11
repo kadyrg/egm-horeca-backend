@@ -28,4 +28,4 @@ class Product(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     stock: Mapped[int] = mapped_column(default=0, nullable=False)
     status: Mapped[bool] = mapped_column(default=True, nullable=True)
-    extra_images: Mapped[List["ProductExtraImages"]] = relationship("ProductExtraImages", back_populates="product")
+    extra_images: Mapped[List["ProductExtraImages"]] = relationship("ProductExtraImages", back_populates="product", order_by="ProductExtraImages.order")

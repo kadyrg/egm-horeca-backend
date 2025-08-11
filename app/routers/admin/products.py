@@ -1,11 +1,11 @@
 from typing import List, Annotated
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Query
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.db import get_db_session
-from app.crud import get_products_admin, add_product, update_product
+from app.crud import get_products_admin, add_product, update_product, get_product_admin
 from app.deps import ProductCreate, ProductUpdate
-from app.schemas import ProductListAdmin, StatusRes
+from app.schemas import ProductListAdmin, StatusRes, ProductDetailAdmin
 
 
 router = APIRouter(prefix='/products', tags=['Products'])
@@ -21,6 +21,15 @@ async def _add_product(
         session: AsyncSession = Depends(get_db_session)
 ):
     return await add_product(product_in, session)
+
+
+@router.post('/{product_id}', response_model=ProductDetailAdmin)
+async def _get_product_admin(
+        product_id: Annotated[int, Path(..., ge=1)],
+        session: AsyncSession = Depends(get_db_session)
+):
+    return await get_product_admin(product_id, session)
+
 
 
 @router.patch('/{product_id}', response_model=StatusRes)
