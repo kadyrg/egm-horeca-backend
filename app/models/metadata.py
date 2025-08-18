@@ -8,7 +8,7 @@ from .base import Base
 class MetaDataGroup(str, Enum):
     root_layout = "root_layout"
     home_page = "home_page"
-
+    login_page = "login_page"
 
     messages_en = "messages_en"
 
@@ -17,6 +17,7 @@ class MetaDataGroup(str, Enum):
     register_page = "register_page"
     verify_email_page = "verify_email_page"
     website = "website"
+    shared = "shared"
 
 
 class MetaData(Base):

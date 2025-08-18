@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query
-from typing import Annotated, List
+from typing import Annotated, List, Literal
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_db_session
@@ -8,7 +8,10 @@ from app.crud import get_categories, get_category, get_category_products
 from app.deps import lang_dep
 
 
-router = APIRouter(prefix='/categories', tags=['Client: Categories'])
+router = APIRouter(
+    prefix='/categories',
+    tags=['Categories']
+)
 
 @router.get('', response_model=List[CategoryList])
 async def _get_categories(

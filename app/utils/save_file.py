@@ -9,7 +9,7 @@ from app.core import settings
 
 def save_product_image(image_bytes: bytes) -> str:
     img = Image.open(BytesIO(image_bytes))
-    target_width, target_height = 840, 1008
+    target_width, target_height = 1000, 1200
     img = ImageOps.fit(
         img,
         (target_width, target_height),
@@ -19,7 +19,7 @@ def save_product_image(image_bytes: bytes) -> str:
     filename = f"{uuid.uuid4().hex}.webp"
     filepath = settings.media_url / "products" / filename
     img.save(filepath, format="WEBP", quality=100)
-    return f"/media/products/{filename}"
+    return f"media/products/{filename}"
 
 
 TARGET_WIDTH = 1920
@@ -50,12 +50,13 @@ def save_category_image(image_bytes: bytes) -> str:
     filename = f"{uuid.uuid4().hex}.webp"
     filepath = settings.media_url / "categories" / filename
     img.save(filepath, format="WEBP", quality=100)
-    return f"/media/categories/{filename}"
+    return f"media/categories/{filename}"
 
 
-def delete_media_file(filepath: str):
-    full_path = settings.base_url / filepath
-    try:
-        os.remove(full_path)
-    except:
-        pass
+def delete_media_file(filepath: str | None):
+    if filepath:
+        full_path = settings.base_url / filepath
+        try:
+            os.remove(full_path)
+        except:
+            pass

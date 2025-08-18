@@ -5,92 +5,207 @@ from sqlalchemy import select, func
 from fastapi import HTTPException
 from math import ceil
 from slugify import slugify
+import json
 
-from app.utils import save_category_image, delete_media_file
-from app.schemas import StatusRes, CategoryList, CategoryDetail, ProductList, CategoryAdminList
-from app.models import Category, Product, Conf, ConfType
+from app.utils import (
+    save_category_image,
+    delete_media_file
+)
+from app.schemas import (
+    StatusRes,
+    CategoryList,
+    CategoryDetail,
+    ProductList,
+    CategoryIn,
+    CategoryListAdmin,
+    CategoryListView,
+    CategoryListViewAll
+)
+from app.models import (
+    Category,
+    Product,
+    Conf,
+    ConfType, ProductVariant
+)
 
+# Admin
 
-async def add_category(name_en: str, name_ro: str, image: UploadFile, session: AsyncSession) -> StatusRes:
+async def add_category_admin(
+        category_in: str,
+        image: UploadFile,
+        session: AsyncSession
+) -> CategoryListView:
+    category_in_data = json.loads(category_in)
+    validated = CategoryIn(**category_in_data)
     image_bytes = await image.read()
+    image_path = save_category_image(image_bytes)
     category = Category(
-        name_en=name_en,
-        name_ro=name_ro,
-        slug_en=slugify(name_en),
-        slug_ro=slugify(name_ro),
-        image=save_category_image(image_bytes)
+        name_en=validated.name_en,
+        name_ro=validated.name_ro,
+        slug_en=slugify(validated.name_en),
+        slug_ro=slugify(validated.name_ro),
+        image=image_path,
     )
+    print(category_in_data)
     session.add(category)
     await session.commit()
-    return StatusRes(status="success", message="Category added successfully")
+    return CategoryListView.model_validate(category)
+
+async def get_categories_admin(
+        page: int,
+        session: AsyncSession
+) -> CategoryListAdmin:
+    total_stmt = select(func.count(Category.id))
+    total_result = await session.execute(total_stmt)
+    total = total_result.scalar_one()
+    stmt = (
+        select(
+            Category,
+            func.count(Product.id).label("product_count")
+       )
+        .join(Product, Product.category_id == Category.id, isouter=True)
+        .group_by(Category.id)
+        .order_by(-Category.id)
+        .offset((page - 1) * 25)
+        .limit(25)
+    )
+    result = await session.execute(stmt)
+    rows = result.all()
+    categories = [
+        CategoryListView.model_validate(
+            {**category.__dict__, "product_count": product_count}
+        )
+        for category, product_count in rows
+    ]
+    return CategoryListAdmin(
+        data=categories,
+        total=total,
+        initial=(page - 1) * 25 + 1 if categories else 0,
+        last=(page - 1) * 25 + len(categories),
+        total_pages=(total + 25 - 1) // 25,
+        page=page
+    )
+
+async def get_all_categories_admin(session: AsyncSession) -> List[CategoryListViewAll]:
+    stmt = (
+        select(Category)
+        .order_by(-Category.id)
+    )
+    result = await session.execute(stmt)
+    categories = result.scalars().all()
+    return [CategoryListViewAll.model_validate(category) for category in categories]
+
+async def delete_category_admin(
+        category_id: int,
+        session: AsyncSession
+) -> StatusRes:
+    stmt = (
+        select(Category)
+        .where(Category.id == category_id)
+    )
+    result = await session.execute(stmt)
+    category = result.scalar_one_or_none()
+    if category is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Category not found"
+        )
+    delete_media_file(category.image)
+    await session.delete(category)
+    await session.commit()
+    return StatusRes(
+        status="success",
+        message="Category deleted successfully",
+    )
 
 
-async def get_categories(language: str, session: AsyncSession) -> List[CategoryList]:
-    stmt = select(Category).join(Product).distinct()
+async def update_category_admin(
+        category_id: int,
+        category_in: str,
+        image: UploadFile | None,
+        session: AsyncSession
+) -> CategoryListView:
+    stmt = (
+        select(Category)
+        .where(Category.id == category_id)
+    )
+    result = await session.execute(stmt)
+    category = result.scalar_one_or_none()
+    if category is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Category not found"
+        )
+    category_in_data = json.loads(category_in)
+    validated = CategoryIn(**category_in_data)
+    image_to_delete: str | None = None
+    if image:
+        image_to_delete = category.image
+        image_bytes = await image.read()
+        new_image_path = save_category_image(image_bytes)
+        category.image = new_image_path
+    category.name_en = validated.name_en
+    category.name_ro = validated.name_ro
+    category.slug_en = slugify(validated.name_en)
+    category.slug_ro = slugify(validated.name_ro)
+    await session.commit()
+    if image_to_delete:
+        delete_media_file(image_to_delete)
+    return CategoryListView.model_validate(category)
+
+
+# Client
+
+async def get_categories(
+        lang: str,
+        session: AsyncSession
+) -> List[CategoryList]:
+    stmt = (
+        select(Category)
+        .join(Product)
+        .distinct()
+    )
     result = await session.execute(stmt)
     categories = result.scalars().all()
     return [
         CategoryList(
             id=category.id,
-            name=getattr(category, f"name_{language}", category.name_en),
-            slug=getattr(category, f"slug_{language}", category.slug_en)
+            name=getattr(category, f"name_{lang}"),
+            slug=getattr(category, f"slug_{lang}")
         ) for category in categories
     ]
 
 
-async def get_categories_admin(session: AsyncSession) -> List[CategoryAdminList]:
-    result = await session.execute(select(Category))
-    categories = result.scalars().all()
-    return [
-        CategoryAdminList(
-            id=category.id,
-            name_en=category.name_en,
-            name_ro=category.name_ro,
-        ) for category in categories
-    ]
-
-
-async def update_category(
-        category_id: int,
-        name_en: str | None,
-        name_ro: str | None,
-        image: UploadFile | None,
-        session: AsyncSession,
-):
-    stmt = select(Category).where(Category.id == category_id)
+async def get_category(
+        slug: str,
+        lang: str,
+        session: AsyncSession
+) -> CategoryDetail:
+    slug_attr = getattr(Category, f"slug_{lang}", Category.slug_en)
+    stmt = (
+        select(Category)
+        .where(slug_attr == slug)
+    )
     result = await session.execute(stmt)
     category = result.scalar_one_or_none()
     if category is None:
-        raise HTTPException(status_code=404, detail="Category not found")
-    if name_en is not None:
-        category.name_en = name_en
-        category.slug_en = slugify(name_en)
-    if name_ro is not None:
-        category.name_ro = name_ro
-        category.slug_ro = slugify(name_ro)
-    if image is not None:
-        image_bytes = await image.read()
-        delete_media_file(category.image)
-        category.image = save_category_image(image_bytes)
-    await session.commit()
-    return StatusRes(status="success", message="Category updated")
+        raise HTTPException(
+            status_code=404,
+            detail="Category not found"
+        )
 
-
-async def get_category(slug: str, language: str, session: AsyncSession) -> CategoryDetail:
-    slug_field = getattr(Category, f"slug_{language}", Category.slug_en)
-    category_stmt = select(Category).where(slug_field==slug).join(Product).distinct()
-    category_result = await session.execute(category_stmt)
-    category = category_result.scalar_one_or_none()
-
-    if category is None:
-        raise HTTPException(status_code=404, detail="Category not found")
-
-    page_size_stmt = select(Conf).where(Conf.type == ConfType.page_size)
+    page_size_stmt = (
+        select(Conf)
+        .where(Conf.type == ConfType.page_size)
+    )
     page_size_result = await session.execute(page_size_stmt)
     page_size_conf = page_size_result.scalar_one()
     page_size = int(page_size_conf.value)
 
-    count_stmt = select(func.count()).where(Product.category_id == category.id)
+    count_stmt = (
+        select(func.count())
+        .where(Product.category_id == category.id)
+    )
     count_result = await session.execute(count_stmt)
     total_products = count_result.scalar_one()
 
@@ -98,31 +213,41 @@ async def get_category(slug: str, language: str, session: AsyncSession) -> Categ
 
     return CategoryDetail(
         id=category.id,
-        name=getattr(category, f"name_{language}", category.name_en),
-        slug=getattr(category, f"slug_{language}", category.slug_en),
+        name=getattr(category, f"name_{lang}"),
+        slug=getattr(category, f"slug_{lang}"),
         image=category.image,
         total_products=total_products,
         total_pages=total_pages,
     )
 
 
+# Above don't touch
 
-
-
-async def get_category_products(slug: str, language: str, page: int, session: AsyncSession) -> List[ProductList]:
-    slug_field = getattr(Category, f"slug_{language}", Category.slug_en)
-    category_stmt = select(Category).where(slug_field==slug)
+async def get_category_products(
+        slug: str,
+        lang: str,
+        page: int,
+        session: AsyncSession
+) -> List[ProductList]:
+    slug_field = getattr(Category, f"slug_{lang}", Category.slug_en)
+    category_stmt = (
+        select(Category)
+        .where(slug_field==slug)
+    )
     category_result = await session.execute(category_stmt)
     category = category_result.scalar_one_or_none()
-
     if category is None:
-        raise HTTPException(status_code=404, detail="Category not found")
-
-    page_size_stmt = select(Conf).where(Conf.type == ConfType.page_size)
+        raise HTTPException(
+            status_code=404,
+            detail="Category not found"
+        )
+    page_size_stmt = (
+        select(Conf)
+        .where(Conf.type == ConfType.page_size)
+    )
     page_size_result = await session.execute(page_size_stmt)
     page_size_conf = page_size_result.scalar_one()
     page_size = int(page_size_conf.value)
-
     products_stmt = (
         select(Product)
         .where(Product.category_id == category.id)
@@ -132,14 +257,13 @@ async def get_category_products(slug: str, language: str, page: int, session: As
     )
     products_result = await session.execute(products_stmt)
     products = products_result.scalars().all()
-
     return [
         ProductList(
             id=product.id,
-            name=getattr(product, f"name_{language}", product.name_en),
-            description=getattr(product, f"description_{language}", product.description_en),
-            image=product.image,
+            name=getattr(product, f"name_{lang}", product.name_en),
+            description=getattr(product, f"description_{lang}", product.description_en),
+            main_image=product.main_image,
             price=product.price,
-            slug=getattr(product, f"slug_{language}", product.slug_en)
+            slug=getattr(product, f"slug_{lang}", product.slug_en)
         ) for product in products
     ]

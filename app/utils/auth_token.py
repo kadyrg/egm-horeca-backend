@@ -19,7 +19,7 @@ def generate_access_token(user: User) -> str:
 
 
 def generate_refresh_token(user: User) -> str:
-    expire = datetime.now(timezone.utc) + (timedelta(minutes=settings.refresh_token_validity))
+    expire = datetime.now(timezone.utc) + (timedelta(days=settings.refresh_token_validity))
     payload = {
         'sub': str(user.id),
         'role': user.role,

@@ -17,9 +17,20 @@ class TopBar(BaseModel):
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
 
+class BottomNav(BaseModel):
+      home: Annotated[str, Field(alias='home')]
+      categories: Annotated[str, Field(alias='categories')]
+      likes: Annotated[str, Field(alias='likes')]
+      cart: Annotated[str, Field(alias='cart')]
+      profile: Annotated[str, Field(alias='profile')]
+
+      model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
 class RootLayout(BaseModel):
     header: Header
     top_bar: Annotated[TopBar, Field(alias='topBar')]
+    bottom_nav: Annotated[BottomNav, Field(alias='bottomNav')]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
@@ -45,7 +56,7 @@ class ProductPage(BaseModel):
 class RegisterPage(BaseModel):
     title: Annotated[str, Field(alias='title')]
     description: Annotated[str, Field(alias='description')]
-    subtitle: Annotated[str, Field(alias='subtitle')]
+    page_title: Annotated[str, Field(alias='pageTitle')]
     google_button: Annotated[str, Field(alias='googleButton')]
     first_name_placeholder: Annotated[str, Field(alias='firstNamePlaceholder')]
     last_name_placeholder: Annotated[str, Field(alias='lastNamePlaceholder')]
@@ -53,6 +64,24 @@ class RegisterPage(BaseModel):
     phone_number_placeholder: Annotated[str, Field(alias='phoneNumberPlaceholder')]
     password_placeholder: Annotated[str, Field(alias='passwordPlaceholder')]
     signup_button: Annotated[str, Field(alias='signupButton')]
+    already: Annotated[str, Field(alias='already')]
+    sign_in: Annotated[str, Field(alias='signIn')]
+    or_txt: Annotated[str, Field(alias='orTxt')]
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
+class LoginPage(BaseModel):
+    title: Annotated[str, Field(alias='title')]
+    description: Annotated[str, Field(alias='description')]
+    page_title: Annotated[str, Field(alias='pageTitle')]
+    google_button: Annotated[str, Field(alias='googleButton')]
+    email_placeholder: Annotated[str, Field(alias='emailPlaceholder')]
+    password_placeholder: Annotated[str, Field(alias='passwordPlaceholder')]
+    signin_button: Annotated[str, Field(alias='signinButton')]
+    or_txt: Annotated[str, Field(alias='orTxt')]
+    dont_have: Annotated[str, Field(alias='dontHave')]
+    sign_up: Annotated[str, Field(alias='signUp')]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
@@ -60,5 +89,11 @@ class RegisterPage(BaseModel):
 class VerifyEmailPage(BaseModel):
     title: Annotated[str, Field(alias='title')]
     description: Annotated[str, Field(alias='description')]
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
+class Shared(BaseModel):
+    add_to_cart: Annotated[str, Field(alias='addToCart')]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
