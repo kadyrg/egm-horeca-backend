@@ -15,7 +15,6 @@ from .categories import Category
 from .products import (
     Product,
     ProductSpecification,
-    ProductVariantSpecification,
     ProductSpecificationType,
     ProductVariant,
     ProductVariantType,
@@ -43,7 +42,6 @@ __all__ = [
 
     'Product',
     'ProductSpecification',
-    'ProductVariantSpecification',
     'ProductSpecificationType',
     'ProductVariant',
     'ProductVariantType',

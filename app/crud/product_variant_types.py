@@ -4,6 +4,7 @@ from sqlalchemy import (
     select,
     func
 )
+from typing import List
 
 from app.schemas import (
     ProductVariantTypeIn,
@@ -94,3 +95,13 @@ async def delete_product_variant_type(
         status="success",
         message="Product Variant Type deleted",
     )
+
+
+async def get_product_variant_types_all(session: AsyncSession) -> List[ProductVariantTypeListView]:
+    stmt = (
+        select(ProductVariantType)
+        .order_by(-ProductVariantType.id)
+    )
+    result = await session.execute(stmt)
+    product_variant_types = result.scalars().all()
+    return [ProductVariantTypeListView.model_validate(product_variant_type) for product_variant_type in product_variant_types]

@@ -4,6 +4,7 @@ from .categories import router as categories_router
 from .products import router as products_router
 from .users import router as users_router
 from .product_variant_types import router as product_variant_types_router
+from .product_variants import router as product_variants_router
 
 
 app = FastAPI(
@@ -17,3 +18,4 @@ app.include_router(categories_router)
 app.include_router(products_router)
 app.include_router(users_router)
 app.include_router(product_variant_types_router)
+app.include_router(product_variants_router)

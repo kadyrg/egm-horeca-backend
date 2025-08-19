@@ -11,6 +11,7 @@ from typing import (
 from decimal import Decimal
 
 from .categories import CategoryList
+from .product_variant_types import ProductVariantTypeDetail
 
 
 # Admin
@@ -99,5 +100,6 @@ class ProductDetail(BaseModel):
     main_image: Annotated[str, Field(alias="mainImage")]
     price: Decimal
     category: CategoryList
+    variant_types: Annotated[List[ProductVariantTypeDetail], Field(alias="variantTypes")]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)

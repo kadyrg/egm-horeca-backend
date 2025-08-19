@@ -14,12 +14,14 @@ from app.crud import (
     get_products_admin,
     add_product_admin,
     delete_products_admin,
-    update_product_admin
+    update_product_admin,
+    get_product_variants_admin
 )
 from app.schemas import (
     ProductListAdmin,
     StatusRes,
-    ProductListView
+    ProductListView,
+    ProductVariantsListAdmin
 )
 
 
@@ -92,3 +94,12 @@ async def _delete_product_admin(
         session: AsyncSession = Depends(get_db_session),
 ):
     return await delete_products_admin(product_id, session)
+
+
+@router.get('/{product_id}/variants', response_model=ProductVariantsListAdmin)
+async def _get_product_variants_admin(
+        product_id: Annotated[int, Path(...)],
+        page: Annotated[int, Path(..., ge=1)] = 1,
+        session: AsyncSession = Depends(get_db_session),
+):
+    return await get_product_variants_admin(page, product_id, session)

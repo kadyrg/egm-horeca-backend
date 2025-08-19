@@ -22,7 +22,8 @@ from .products import (
     add_product_admin,
     get_liked_products,
     delete_products_admin,
-    update_product_admin
+    update_product_admin,
+    get_product_variants_admin
 )
 
 from .register import register
@@ -49,9 +50,11 @@ from .product_variant_types import (
     add_product_variant_type,
     get_product_variant_types,
     delete_product_variant_type,
-    update_product_variant_type
+    update_product_variant_type,
+    get_product_variant_types_all
 )
 
+from .product_variants import add_product_variant
 
 __all__ = [
     'get_users_admin',
@@ -77,6 +80,7 @@ __all__ = [
     'get_liked_products',
     'delete_products_admin',
     'update_product_admin',
+    'get_product_variants_admin',
 
     'register',
 
@@ -98,4 +102,7 @@ __all__ = [
     'get_product_variant_types',
     'delete_product_variant_type',
     'update_product_variant_type',
+    'get_product_variant_types_all',
+
+    'add_product_variant'
 ]

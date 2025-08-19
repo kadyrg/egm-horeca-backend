@@ -20,7 +20,9 @@ from app.schemas import (
     StatusRes,
     ProductListView,
     ProductsForSearch,
-    ProductIn
+    ProductIn,
+    ProductVariantsListAdmin,
+    ProductVariantListView
 )
 from app.utils import (
     save_product_image,
@@ -216,6 +218,38 @@ async def delete_products_admin(
         status="success",
         message="Product deleted"
     )
+
+
+async def get_product_variants_admin(
+        page: int,
+        product_id: int,
+        session: AsyncSession
+) -> ProductVariantsListAdmin:
+    total_stmt = (
+        select(func.count(ProductVariant.id))
+        .where(ProductVariant.product_id == product_id)
+    )
+    total_result = await session.execute(total_stmt)
+    total = total_result.scalar_one()
+
+    stmt = (
+        select(ProductVariant)
+        .where(ProductVariant.product_id == product_id)
+        .order_by(-ProductVariant.id)
+        .offset((page - 1) * 25)
+        .limit(25)
+    )
+    result = await session.execute(stmt)
+    product_variants = result.scalars().all()
+    return ProductVariantsListAdmin(
+        data=[ProductVariantListView.model_validate(product_variant) for product_variant in product_variants],
+        total=total,
+        initial=(page - 1) * 25 + 1 if product_variants else 0,
+        last=(page - 1) * 25 + len(product_variants),
+        total_pages=(total + 25 - 1) // 25,
+        page=page
+    )
+
 
 # Client
 

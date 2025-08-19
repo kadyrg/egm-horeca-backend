@@ -63,6 +63,12 @@ from .product_variant_types import (
     ProductVariantTypeListAdmin
 )
 
+from .product_variants import (
+    ProductVariantIn,
+    ProductVariantListView,
+    ProductVariantsListAdmin
+)
+
 
 __all__ = [
     'StatusRes',
@@ -111,4 +117,8 @@ __all__ = [
     'ProductVariantTypeIn',
     'ProductVariantTypeListView',
     'ProductVariantTypeListAdmin',
+
+    'ProductVariantIn',
+    'ProductVariantListView',
+    'ProductVariantsListAdmin'
 ]

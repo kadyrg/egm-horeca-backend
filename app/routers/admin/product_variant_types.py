@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 
 from fastapi import (
     APIRouter,
@@ -18,7 +18,8 @@ from app.crud import (
     add_product_variant_type,
     get_product_variant_types,
     delete_product_variant_type,
-    update_product_variant_type
+    update_product_variant_type,
+    get_product_variant_types_all
 )
 
 
@@ -43,7 +44,15 @@ async def _get_product_variant_types(
     return await get_product_variant_types(page, session)
 
 
-@router.delete('/{product_variant_type_id}', response_model=ProductVariantTypeListView)
+@router.get('/all', response_model=List[ProductVariantTypeListView])
+async def _get_product_variant_types_all(
+        session: AsyncSession = Depends(get_db_session)
+):
+    return await get_product_variant_types_all(session)
+
+
+
+@router.patch('/{product_variant_type_id}', response_model=ProductVariantTypeListView)
 async def _update_product_variant_type(
         product_variant_type_id: Annotated[int, Path(ge=1)],
         product_variant_type_in: ProductVariantTypeIn,
