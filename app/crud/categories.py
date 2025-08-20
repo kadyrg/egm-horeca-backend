@@ -6,7 +6,9 @@ from fastapi import HTTPException
 from math import ceil
 from slugify import slugify
 import json
+import httpx
 
+from app.core import settings
 from app.utils import (
     save_category_image,
     delete_media_file
@@ -19,7 +21,8 @@ from app.schemas import (
     CategoryIn,
     CategoryListAdmin,
     CategoryListView,
-    CategoryListViewAll
+    CategoryListViewAll,
+    CategoryInResponse
 )
 from app.models import (
     Category,
@@ -34,7 +37,7 @@ async def add_category_admin(
         category_in: str,
         image: UploadFile,
         session: AsyncSession
-) -> CategoryListView:
+) -> CategoryInResponse:
     category_in_data = json.loads(category_in)
     validated = CategoryIn(**category_in_data)
     image_bytes = await image.read()
@@ -46,10 +49,9 @@ async def add_category_admin(
         slug_ro=slugify(validated.name_ro),
         image=image_path,
     )
-    print(category_in_data)
     session.add(category)
     await session.commit()
-    return CategoryListView.model_validate(category)
+    return CategoryInResponse.model_validate(category)
 
 async def get_categories_admin(
         page: int,

@@ -18,6 +18,14 @@ class CategoryIn(BaseModel):
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
 
+class CategoryInResponse(CategoryIn):
+    name_en: Annotated[str, Field(alias="nameEn")]
+    name_ro: Annotated[str, Field(alias="nameRo")]
+    image: Annotated[str, Field(alias="image")]
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
 class CategoryListView(CategoryIn):
     id: int
     image: str

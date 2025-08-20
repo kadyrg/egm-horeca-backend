@@ -11,7 +11,8 @@ from .categories import (
     CategoryIn,
     CategoryListAdmin,
     CategoryListView,
-    CategoryListViewAll
+    CategoryListViewAll,
+    CategoryInResponse
 )
 
 from .products import (
@@ -82,6 +83,7 @@ __all__ = [
     'CategoryListAdmin',
     'CategoryListView',
     'CategoryListViewAll',
+    'CategoryInResponse',
 
     'ProductList',
     'ProductDetail',

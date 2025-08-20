@@ -18,7 +18,8 @@ from app.schemas import (
     StatusRes,
     CategoryListAdmin,
     CategoryListView,
-    CategoryListViewAll
+    CategoryListViewAll,
+    CategoryInResponse
 )
 from app.crud import (
     add_category_admin,
@@ -34,7 +35,7 @@ router = APIRouter(
     tags=['Categories']
 )
 
-@router.post("", response_model=CategoryListView)
+@router.post("", response_model=CategoryInResponse)
 async def _add_category_admin(
         category_in: Annotated[str, Form(..., alias="categoryIn")],
         image: Annotated[UploadFile, File(..., alias="image")],
