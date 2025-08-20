@@ -21,8 +21,6 @@ class Settings(BaseSettings):
 
     email_token_validity: int = 3600 # seconds
 
-    front_end_url: str
-
     access_token_secret: str
     refresh_token_secret: str
 
