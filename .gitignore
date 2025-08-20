@@ -6,7 +6,8 @@ __pycache__/
 # C extensions
 *.so
 /media/**
-!**/.gitkeep
+!/media/.gitkeep
+!/media/*/.gitkeep
 
 # Distribution / packaging
 .Python
