@@ -8,7 +8,6 @@ __pycache__/
 /media/**
 !/media/.gitkeep
 !/media/*/.gitkeep
-
 # Distribution / packaging
 .Python
 build/
