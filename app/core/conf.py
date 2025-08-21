@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     email_user: str
     email_pass: str
 
+    front_end_url: str
+
     email_token_validity: int = 3600  # seconds
 
     access_token_secret: str
