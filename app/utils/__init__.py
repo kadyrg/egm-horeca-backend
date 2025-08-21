@@ -9,7 +9,6 @@ from .auth_token import (
     decode_access_token,
     decode_refresh_token,
 )
-from .frontend_revalidation import revalidate_frontend
 
 __all__ = [
     "save_product_image",
@@ -27,5 +26,4 @@ __all__ = [
     "generate_refresh_token",
     "decode_access_token",
     "decode_refresh_token",
-    'revalidate_frontend'
 ]

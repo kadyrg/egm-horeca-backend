@@ -4,7 +4,7 @@ from sqlalchemy import select, func
 from typing import List
 from app.schemas import BannerListView, BannerListAdmin, StatusRes, BannerList
 from app.models import Banner
-from app.utils import save_banner_image, delete_media_file, revalidate_frontend
+from app.utils import save_banner_image, delete_media_file
 
 
 # Admin
@@ -16,7 +16,6 @@ async def add_banner(image: UploadFile, session: AsyncSession) -> BannerListView
     banner = Banner(image=image_path)
     session.add(banner)
     await session.commit()
-    await revalidate_frontend(["banners"])
     return BannerListView.model_validate(banner)
 
 async def get_banners_admin(page: int, session: AsyncSession) -> BannerListAdmin:
@@ -49,7 +48,6 @@ async def delete_banner_admin(category_id: int, session: AsyncSession) -> Status
     delete_media_file(banner.image)
     await session.delete(banner)
     await session.commit()
-    await revalidate_frontend(["banners"])
     return StatusRes(
         status="success",
         message="Banner deleted successfully",
@@ -73,7 +71,6 @@ async def update_banner_admin(
     await session.commit()
     if image_to_delete:
         delete_media_file(image_to_delete)
-    await revalidate_frontend(["banners"])
     return BannerListView.model_validate(banner)
 
 

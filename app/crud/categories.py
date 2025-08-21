@@ -19,7 +19,7 @@ from app.schemas import (
     CategoryListViewAll,
     CategoryInResponse,
 )
-from app.models import Category, Product, Conf, ConfType, ProductVariant
+from app.models import Category, Product, Conf, ConfType
 
 # Admin
 
@@ -40,6 +40,7 @@ async def add_category_admin(
     )
     session.add(category)
     await session.commit()
+    await revalidate_frontend(["categories"])
     return CategoryInResponse.model_validate(category)
 
 
@@ -125,7 +126,7 @@ async def update_category_admin(
 
 
 async def get_categories(lang: str, session: AsyncSession) -> List[CategoryList]:
-    stmt = select(Category).join(Product).distinct()
+    stmt = select(Category)
     result = await session.execute(stmt)
     categories = result.scalars().all()
     return [
