@@ -54,7 +54,7 @@ async def _get_all_categories_admin(
     return await get_all_categories_admin(session)
 
 
-@router.patch("/{category_id}", response_model=CategoryListView)
+@router.patch("/{category_id}", response_model=StatusRes)
 async def _update_category_admin(
     category_id: Annotated[int, Path(..., ge=1)],
     category_in: Annotated[str, Form(..., alias="categoryIn")],

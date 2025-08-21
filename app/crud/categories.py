@@ -97,7 +97,7 @@ async def delete_category_admin(category_id: int, session: AsyncSession) -> Stat
 
 async def update_category_admin(
     category_id: int, category_in: str, image: UploadFile | None, session: AsyncSession
-) -> CategoryListView:
+) -> StatusRes:
     stmt = select(Category).where(Category.id == category_id)
     result = await session.execute(stmt)
     category = result.scalar_one_or_none()
@@ -118,7 +118,7 @@ async def update_category_admin(
     await session.commit()
     if image_to_delete:
         delete_media_file(image_to_delete)
-    return CategoryListView.model_validate(category)
+    return StatusRes(status="success", message="Category updated successfully")
 
 
 # Client
