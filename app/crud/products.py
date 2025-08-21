@@ -19,7 +19,7 @@ from app.schemas import (
     ProductVariantsListAdmin,
     ProductVariantListView,
 )
-from app.utils import save_product_image, delete_media_file
+from app.utils import save_product_image, delete_media_file, revalidate_frontend
 
 
 async def get_products_admin(page: int, session: AsyncSession) -> ProductListAdmin:
@@ -162,6 +162,7 @@ async def update_product_admin(
         product.extra_image_5,
         product.extra_image_6,
     ) = new_paths
+    await revalidate_frontend(["products", f"product-{product.slug_en}", f"product-{product.slug_ro}"])
     product.name_en = validated.name_en
     product.name_ro = validated.name_ro
     product.description_en = validated.description_en
@@ -174,6 +175,7 @@ async def update_product_admin(
     product.slug_en = slugify(validated.name_en)
     product.slug_ro = slugify(validated.name_ro)
     await session.commit()
+
     return StatusRes(status="success", message="Updated product")
 
 
