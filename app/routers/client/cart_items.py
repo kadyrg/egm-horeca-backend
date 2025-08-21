@@ -15,23 +15,20 @@ from app.crud import (
 )
 
 
-router = APIRouter(
-    prefix='/cart_items',
-    tags=['Cart Items']
-)
+router = APIRouter(prefix="/cart_items", tags=["Cart Items"])
 
-@router.post('', response_model=CartItemList)
+
+@router.post("", response_model=CartItemList)
 async def _add_cart_item(
-        cart_item_in: CartItemCreate,
-        user: User = Depends(get_user),
-        session: AsyncSession = Depends(get_db_session)
+    cart_item_in: CartItemCreate,
+    user: User = Depends(get_user),
+    session: AsyncSession = Depends(get_db_session),
 ):
     return await add_cart_item(cart_item_in, user, session)
 
 
-@router.get('', response_model=List[CartItemList])
+@router.get("", response_model=List[CartItemList])
 async def _get_cart_items(
-        user: User = Depends(get_user),
-        session: AsyncSession = Depends(get_db_session)
+    user: User = Depends(get_user), session: AsyncSession = Depends(get_db_session)
 ):
     return await get_cart_items(user, session)

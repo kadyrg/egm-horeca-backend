@@ -4,12 +4,15 @@ from typing import Annotated, List
 
 # Client
 
+
 class CategoryList(BaseModel):
     id: int
     name: str
     slug: str
 
+
 # Admin
+
 
 class CategoryIn(BaseModel):
     name_en: Annotated[str, Field(..., min_length=1, max_length=50, alias="nameEn")]
@@ -52,12 +55,7 @@ class CategoryListAdmin(BaseModel):
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
 
-
 # Above don't touch
-
-
-
-
 
 
 class CategoryDetail(BaseModel):
@@ -65,7 +63,7 @@ class CategoryDetail(BaseModel):
     name: str
     slug: str
     image: str
-    total_products: Annotated[int, Field(..., alias='totalProducts')]
-    total_pages: Annotated[int, Field(..., alias='totalPages')]
+    total_products: Annotated[int, Field(..., alias="totalProducts")]
+    total_pages: Annotated[int, Field(..., alias="totalPages")]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)

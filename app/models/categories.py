@@ -16,4 +16,6 @@ class Category(Base):
     slug_en: Mapped[str] = mapped_column(unique=True, nullable=False)
     slug_ro: Mapped[str] = mapped_column(unique=True, nullable=False)
     image: Mapped[str] = mapped_column(nullable=False)
-    products: Mapped[List["Product"]] = relationship("Product", back_populates="category")
+    products: Mapped[List["Product"]] = relationship(
+        "Product", back_populates="category"
+    )

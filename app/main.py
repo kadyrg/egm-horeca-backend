@@ -7,9 +7,7 @@ from .routers.helper import router as helper_router
 
 app = FastAPI(
     title="EGM Horeca",
-    swagger_ui_parameters={
-        "defaultModelsExpandDepth": -1
-    },
+    swagger_ui_parameters={"defaultModelsExpandDepth": -1},
     redoc_url=None,
 )
 
@@ -26,4 +24,3 @@ app.mount("/admin", admin_app)
 app.mount("/media", media_app)
 app.mount("/auth", auth_app)
 app.mount("/api", client_app)
-

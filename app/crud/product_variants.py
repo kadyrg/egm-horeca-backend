@@ -1,15 +1,11 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from app.models import ProductVariant
-from app.schemas import (
-    ProductVariantIn,
-    StatusRes
-)
+from app.schemas import ProductVariantIn, StatusRes
 
 
 async def add_product_variant(
-        product_variant_in: ProductVariantIn,
-        session: AsyncSession
+    product_variant_in: ProductVariantIn, session: AsyncSession
 ) -> StatusRes:
     product_variant = ProductVariant(
         name_ro=product_variant_in.name_ro,

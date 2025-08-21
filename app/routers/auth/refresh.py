@@ -8,10 +8,11 @@ from app.models import User
 from app.deps import get_refresh_user
 
 
-router = APIRouter(prefix='/refresh', tags=['Refresh'])
+router = APIRouter(prefix="/refresh", tags=["Refresh"])
 
-@router.post('',  response_model=TokenResponse)
+
+@router.post("", response_model=TokenResponse)
 async def _refresh(
-        user: User = Depends(get_refresh_user),
+    user: User = Depends(get_refresh_user),
 ):
     return await refresh(user)

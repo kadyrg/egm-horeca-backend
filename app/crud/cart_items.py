@@ -3,25 +3,14 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from typing import List
 
-from app.schemas import (
-    CartItemCreate,
-    CartItemList
-)
-from app.models import (
-    User,
-    Cart,
-    CartItem
-)
+from app.schemas import CartItemCreate, CartItemList
+from app.models import User, Cart, CartItem
 
 
 async def add_cart_item(
-        cart_item_in: CartItemCreate,
-        user: User,
-        session: AsyncSession
+    cart_item_in: CartItemCreate, user: User, session: AsyncSession
 ) -> CartItemList:
-    cart_stmt = select(Cart).where(
-        Cart.user_id == user.id
-    )
+    cart_stmt = select(Cart).where(Cart.user_id == user.id)
     cart_result = await session.execute(cart_stmt)
     cart = cart_result.scalar_one_or_none()
     if cart is None:
@@ -30,8 +19,7 @@ async def add_cart_item(
         await session.flush()
 
     cart_item_stmt = select(CartItem).where(
-        CartItem.cart_id == cart.id,
-        CartItem.product_id==cart_item_in.product_id
+        CartItem.cart_id == cart.id, CartItem.product_id == cart_item_in.product_id
     )
     cart_item_result = await session.execute(cart_item_stmt)
     cart_item = cart_item_result.scalar_one_or_none()
@@ -52,12 +40,14 @@ async def add_cart_item(
 
 
 async def get_cart_items(
-        user: User,
-        session: AsyncSession,
+    user: User,
+    session: AsyncSession,
 ) -> List[CartItemList]:
-    stmt = select(Cart).where(
-        Cart.user_id == user.id
-    ).options(selectinload(Cart.cart_items))
+    stmt = (
+        select(Cart)
+        .where(Cart.user_id == user.id)
+        .options(selectinload(Cart.cart_items))
+    )
     result = await session.execute(stmt)
     cart = result.scalar_one_or_none()
     if cart is None:
@@ -68,5 +58,6 @@ async def get_cart_items(
         CartItemList(
             product_id=str(cart_item.product_id),
             quantity=str(cart_item.quantity),
-        ) for cart_item in cart.cart_items
+        )
+        for cart_item in cart.cart_items
     ]

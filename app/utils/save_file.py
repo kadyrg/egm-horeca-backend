@@ -25,6 +25,7 @@ def save_product_image(image_bytes: bytes) -> str:
 TARGET_WIDTH = 1920
 TARGET_HEIGHT = 384
 
+
 def save_category_image(image_bytes: bytes) -> str:
     img = Image.open(BytesIO(image_bytes))
 
@@ -52,6 +53,36 @@ def save_category_image(image_bytes: bytes) -> str:
     img.save(filepath, format="WEBP", quality=100)
     return f"media/categories/{filename}"
 
+
+BANNER_TARGET_WIDTH = 1920
+BANNER_TARGET_HEIGHT = 512
+
+def save_banner_image(image_bytes: bytes) -> str:
+    img = Image.open(BytesIO(image_bytes))
+
+    target_aspect = BANNER_TARGET_WIDTH / BANNER_TARGET_HEIGHT
+    img_aspect = img.width / img.height
+
+    if img_aspect > target_aspect:
+        new_height = BANNER_TARGET_HEIGHT
+        new_width = int(new_height * img_aspect)
+    else:
+        new_width = BANNER_TARGET_WIDTH
+        new_height = int(new_width / img_aspect)
+
+    img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+    left = (new_width - BANNER_TARGET_WIDTH) // 2
+    top = (new_height - BANNER_TARGET_HEIGHT) // 2
+    right = left + BANNER_TARGET_WIDTH
+    bottom = top + BANNER_TARGET_HEIGHT
+
+    img = img.crop((left, top, right, bottom))
+
+    filename = f"{uuid.uuid4().hex}.webp"
+    filepath = settings.media_url / "banners" / filename
+    img.save(filepath, format="WEBP", quality=100)
+    return f"media/banners/{filename}"
 
 def delete_media_file(filepath: str | None):
     if filepath:

@@ -6,13 +6,14 @@ from pydantic import BaseModel, Field, ConfigDict
 
 # Admin
 
+
 class ProductVariantIn(BaseModel):
-    name_en: Annotated[str, Field(..., alias='nameEn')]
-    name_ro: Annotated[str, Field(..., alias='nameRo')]
+    name_en: Annotated[str, Field(..., alias="nameEn")]
+    name_ro: Annotated[str, Field(..., alias="nameRo")]
     price: Decimal
-    stock: Annotated[int, Field(..., alias='stock')]
-    variant_type_id: Annotated[int, Field(..., alias='productVariantTypeId')]
-    product_id: Annotated[int, Field(..., alias='productId')]
+    stock: Annotated[int, Field(..., alias="stock")]
+    variant_type_id: Annotated[int, Field(..., alias="productVariantTypeId")]
+    product_id: Annotated[int, Field(..., alias="productId")]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 

@@ -14,5 +14,7 @@ class Conf(Base):
     __tablename__ = "conf"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    type: Mapped[ConfType] = mapped_column(SqlEnum(ConfType), unique=True, nullable=False)
+    type: Mapped[ConfType] = mapped_column(
+        SqlEnum(ConfType), unique=True, nullable=False
+    )
     value: Mapped[str] = mapped_column(nullable=False)

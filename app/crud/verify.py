@@ -9,7 +9,9 @@ from app.utils import verify_email_token, generate_access_token, generate_refres
 
 async def verify_email(verify_email_in: VerifyEmail, session: AsyncSession):
     email = verify_email_token(verify_email_in.token)
-    stmt = select(User).where(User.email==email, User.is_active, User.is_verified==False)
+    stmt = select(User).where(
+        User.email == email, User.is_active, User.is_verified == False
+    )
     result = await session.execute(stmt)
     user = result.scalar_one_or_none()
     if user is None:
@@ -18,5 +20,5 @@ async def verify_email(verify_email_in: VerifyEmail, session: AsyncSession):
     await session.commit()
     return TokenResponse(
         access_token=generate_access_token(user),
-        refresh_token=generate_refresh_token(user)
+        refresh_token=generate_refresh_token(user),
     )

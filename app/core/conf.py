@@ -5,6 +5,7 @@ from typing import List
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+
 class Settings(BaseSettings):
     db_user: str
     db_pass: str
@@ -19,7 +20,7 @@ class Settings(BaseSettings):
     email_user: str
     email_pass: str
 
-    email_token_validity: int = 3600 # seconds
+    email_token_validity: int = 3600  # seconds
 
     access_token_secret: str
     refresh_token_secret: str
@@ -28,8 +29,8 @@ class Settings(BaseSettings):
 
     jwt_algorithm: str = "HS256"
 
-    access_token_validity: int = 15 # minutes
-    refresh_token_validity: int = 30 # days
+    access_token_validity: int = 15  # minutes
+    refresh_token_validity: int = 30  # days
 
     base_url: Path = BASE_DIR
     media_url: Path = BASE_DIR / "media"
@@ -41,5 +42,6 @@ class Settings(BaseSettings):
     class Config:
         env_file = BASE_DIR / ".env"
         env_file_encoding = "utf-8"
+
 
 settings = Settings()

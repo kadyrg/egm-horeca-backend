@@ -24,5 +24,7 @@ class MetaData(Base):
     __tablename__ = "metadata"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    type: Mapped[MetaDataGroup] = mapped_column(SqlEnum(MetaDataGroup), unique=True, nullable=False)
+    type: Mapped[MetaDataGroup] = mapped_column(
+        SqlEnum(MetaDataGroup), unique=True, nullable=False
+    )
     value: Mapped[dict] = mapped_column(JSON, nullable=False)

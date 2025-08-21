@@ -1,12 +1,9 @@
-from pydantic import (
-    BaseModel,
-    Field,
-    ConfigDict
-)
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Annotated, List
 
 
 # Admin
+
 
 class ProductVariantTypeIn(BaseModel):
     name_en: Annotated[str, Field(alias="nameEn")]
@@ -33,6 +30,7 @@ class ProductVariantTypeListAdmin(BaseModel):
 
 
 # Client
+
 
 class ProductVariantTypeDetail(BaseModel):
     name: Annotated[str, Field(alias="name")]

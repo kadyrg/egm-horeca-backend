@@ -16,6 +16,7 @@ class UserRole(str, Enum):
     admin = "admin"
     customer = "customer"
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -25,9 +26,15 @@ class User(Base):
     first_name: Mapped[str] = mapped_column(nullable=False)
     last_name: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
-    role: Mapped[UserRole] = mapped_column(SqlEnum(UserRole), default=UserRole.customer, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc), nullable=False)
+    role: Mapped[UserRole] = mapped_column(
+        SqlEnum(UserRole), default=UserRole.customer, nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now(timezone.utc), nullable=False
+    )
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     is_verified: Mapped[bool] = mapped_column(default=False, nullable=False)
     cart: Mapped["Cart"] = relationship("Cart", back_populates="user")
-    liked_products: Mapped[List["Product"]] = relationship(secondary=user_product_likes, back_populates='liked_users')
+    liked_products: Mapped[List["Product"]] = relationship(
+        secondary=user_product_likes, back_populates="liked_users"
+    )

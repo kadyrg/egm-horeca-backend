@@ -1,13 +1,6 @@
 from datetime import datetime
-from pydantic import (
-    BaseModel,
-    Field,
-    ConfigDict
-)
-from typing import (
-    Annotated,
-    List
-)
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Annotated, List
 from decimal import Decimal
 
 from .categories import CategoryList
@@ -15,6 +8,7 @@ from .product_variant_types import ProductVariantTypeDetail
 
 
 # Admin
+
 
 class ProductListView(BaseModel):
     id: int
@@ -66,6 +60,7 @@ class ProductIn(BaseModel):
 
 # Client
 
+
 class ProductList(BaseModel):
     id: int
     name: str
@@ -97,9 +92,9 @@ class ProductDetail(BaseModel):
     id: int
     name: str
     description: str
-    main_image: Annotated[str, Field(alias="mainImage")]
     price: Decimal
     category: CategoryList
-    variant_types: Annotated[List[ProductVariantTypeDetail], Field(alias="variantTypes")]
+    images: Annotated[List[str], Field(alias="images")]
+
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)

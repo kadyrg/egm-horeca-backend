@@ -1,15 +1,9 @@
-from pydantic import (
-    BaseModel,
-    Field,
-    ConfigDict
-)
-from typing import (
-    Annotated,
-    List
-)
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Annotated, List
 
 
 # Admin
+
 
 class UserListView(BaseModel):
     id: int

@@ -7,9 +7,7 @@ from .verify import router as verify_router
 
 app = FastAPI(
     title="EGM Horeca Auth",
-    swagger_ui_parameters={
-        "defaultModelsExpandDepth": -1
-    },
+    swagger_ui_parameters={"defaultModelsExpandDepth": -1},
 )
 
 app.include_router(login_router)
