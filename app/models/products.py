@@ -62,7 +62,7 @@ class Product(Base):
     liked_users: Mapped[List["User"]] = relationship(
         secondary=user_product_likes, back_populates="liked_products"
     )
-    instance_id: Mapped[int] = mapped_column(ForeignKey("product_instances.id"), nullable=False)
+    instance_id: Mapped[int] = mapped_column(ForeignKey("product_instances.id"), nullable=True)
     instance: Mapped["ProductInstance"] = relationship("ProductInstance", back_populates="products")
     variant_id: Mapped[int] = mapped_column(ForeignKey("product_variants.id"), nullable=True)
     variant: Mapped["ProductVariant"] = relationship("ProductVariant", back_populates="products")
