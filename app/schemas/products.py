@@ -9,6 +9,23 @@ from .product_variant_types import ProductVariantTypeDetail
 
 # Admin
 
+class ProductInstanceListView(BaseModel):
+    id: int
+    products_count: Annotated[int, Field(ge=0, alias="productsCount")]
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
+class ProductInstanceListAdmin(BaseModel):
+    data: List[ProductInstanceListView]
+    total: int
+    initial: int
+    last: int
+    total_pages: Annotated[int, Field(..., alias="totalPages")]
+    page: int
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
 
 class ProductListView(BaseModel):
     id: int
@@ -21,7 +38,6 @@ class ProductListView(BaseModel):
     stock: int
     status: bool
     is_top: Annotated[bool, Field(..., alias="isTop")]
-    variants_count: Annotated[int, Field(..., alias="variantsCount")]
     main_image: Annotated[str | None, Field(alias="mainImage")]
     extra_image_1: Annotated[str | None, Field(alias="extraImage1")]
     extra_image_2: Annotated[str | None, Field(alias="extraImage2")]
@@ -54,6 +70,8 @@ class ProductIn(BaseModel):
     status: Annotated[bool, Field(alias="status")]
     is_top: Annotated[bool, Field(alias="isTop")]
     category_id: Annotated[int, Field(alias="categoryId")]
+    variant_id: Annotated[int, Field(alias="variantId")]
+    instance_id: Annotated[int, Field(alias="instanceId")]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
@@ -88,13 +106,40 @@ class ProductsForSearch(BaseModel):
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 
 
+class ProductVariantTypeSchema(BaseModel):
+    id: int
+    name: str
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
+class ProductVariantSchema(BaseModel):
+    name: str
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
+class VariantProduct(BaseModel):
+    variant_name: Annotated[str, Field(alias="variantName")]
+    slug: str
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
+class Variant(BaseModel):
+    variant_type_name: Annotated[str, Field(alias="variantTypeName")]
+    products: List[VariantProduct]
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
 class ProductDetail(BaseModel):
     id: int
     name: str
     description: str
     price: Decimal
     category: CategoryList
-    images: Annotated[List[str], Field(alias="images")]
-
+    images: List[str]
+    variants: List[Variant]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)

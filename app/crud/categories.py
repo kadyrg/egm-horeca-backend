@@ -40,7 +40,6 @@ async def add_category_admin(
     )
     session.add(category)
     await session.commit()
-    await revalidate_frontend(["categories"])
     return CategoryInResponse.model_validate(category)
 
 

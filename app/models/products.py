@@ -13,6 +13,16 @@ if TYPE_CHECKING:
     from .users import User
 
 
+class ProductInstance(Base):
+    __tablename__ = "product_instances"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    products: Mapped[List["Product"]] = relationship(
+        "Product",
+        back_populates="instance",
+    )
+
+
 class Product(Base):
     __tablename__ = "products"
 
@@ -52,41 +62,10 @@ class Product(Base):
     liked_users: Mapped[List["User"]] = relationship(
         secondary=user_product_likes, back_populates="liked_products"
     )
-    variants: Mapped[List["ProductVariant"]] = relationship(
-        "ProductVariant", back_populates="product"
-    )
-    specifications: Mapped[List["ProductSpecification"]] = relationship(
-        "ProductSpecification", back_populates="product"
-    )
-
-
-class ProductSpecificationType(Base):
-    __tablename__ = "product_specification_types"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name_en: Mapped[str] = mapped_column(unique=True, nullable=False)
-    name_ro: Mapped[str] = mapped_column(unique=True, nullable=False)
-    product_specifications: Mapped[List["ProductSpecification"]] = relationship(
-        "ProductSpecification", back_populates="specification_type"
-    )
-
-
-class ProductSpecification(Base):
-    __tablename__ = "product_specifications"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name_en: Mapped[str] = mapped_column(nullable=False)
-    name_ro: Mapped[str] = mapped_column(nullable=False)
-    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), nullable=False)
-    product: Mapped["Product"] = relationship(
-        "Product", back_populates="specifications"
-    )
-    specification_type_id: Mapped[int] = mapped_column(
-        ForeignKey("product_specification_types.id"), nullable=False
-    )
-    specification_type: Mapped["ProductSpecificationType"] = relationship(
-        "ProductSpecificationType", back_populates="product_specifications"
-    )
+    instance_id: Mapped[int] = mapped_column(ForeignKey("product_instances.id"), nullable=False)
+    instance: Mapped["ProductInstance"] = relationship("ProductInstance", back_populates="products")
+    variant_id: Mapped[int] = mapped_column(ForeignKey("product_variants.id"), nullable=True)
+    variant: Mapped["ProductVariant"] = relationship("ProductVariant", back_populates="products")
 
 
 class ProductVariantType(Base):
@@ -106,10 +85,7 @@ class ProductVariant(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name_en: Mapped[str] = mapped_column(nullable=False)
     name_ro: Mapped[str] = mapped_column(nullable=False)
-    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), nullable=False)
-    product: Mapped["Product"] = relationship("Product", back_populates="variants")
-    price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=True)
-    stock: Mapped[int] = mapped_column(default=0, nullable=True)
+    products: Mapped[List["Product"]] = relationship("Product", back_populates="variant")
     variant_type_id: Mapped[int] = mapped_column(
         ForeignKey("product_variant_types.id"), nullable=False
     )

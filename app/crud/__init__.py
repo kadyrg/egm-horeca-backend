@@ -51,10 +51,12 @@ from .product_variant_types import (
     delete_product_variant_type,
     update_product_variant_type,
     get_product_variant_types_all,
+    get_variants_of_product_variant_type
+
 )
 
-from .product_variants import add_product_variant
-
+from .product_variants import add_product_variant, get_product_variants_all
+from .product_instances import add_product_instance, delete_product_instance, get_products_of_instance_admin, get_product_instances_admin
 __all__ = [
     'add_banner', 'get_banners_admin', 'delete_banner_admin', 'update_banner_admin', 'get_banners',
     "get_users_admin",
@@ -74,6 +76,7 @@ __all__ = [
     "get_products_admin",
     "add_product_admin",
     "delete_products_admin",
+    'get_product_instances_admin',
     "update_product_admin",
     "get_product_variants_admin",
     "register",
@@ -92,4 +95,8 @@ __all__ = [
     "update_product_variant_type",
     "get_product_variant_types_all",
     "add_product_variant",
+    'get_product_variants_all',
+    'add_product_instance',
+    'delete_product_instance',
+    'get_products_of_instance_admin'
 ]

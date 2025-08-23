@@ -1,7 +1,9 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from typing import List
+from sqlalchemy import select
 
 from app.models import ProductVariant
-from app.schemas import ProductVariantIn, StatusRes
+from app.schemas import ProductVariantIn, StatusRes, ProductVariantListView
 
 
 async def add_product_variant(
@@ -21,3 +23,11 @@ async def add_product_variant(
         status="success",
         message="Product Variant Added",
     )
+
+async def get_product_variants_all(
+    session: AsyncSession
+) -> List[ProductVariantListView]:
+    stmt = select(ProductVariant)
+    result = await session.execute(stmt)
+    product_variants = result.scalars().all()
+    return [ProductVariantListView.model_validate(product_variant) for product_variant in product_variants]

@@ -14,6 +14,15 @@ class ProductVariantTypeIn(BaseModel):
 
 class ProductVariantTypeListView(ProductVariantTypeIn):
     id: Annotated[int, Field(alias="id")]
+    variants_count: Annotated[int, Field(alias="variantsCount")]
+
+    model_config = ConfigDict(from_attributes=True, validate_by_name=True)
+
+
+class ProductVariantTypeListViewAll(BaseModel):
+    id: Annotated[int, Field(alias="id")]
+    name_en: Annotated[str, Field(alias="nameEn")]
+    name_ro: Annotated[str, Field(alias="nameRo")]
 
     model_config = ConfigDict(from_attributes=True, validate_by_name=True)
 

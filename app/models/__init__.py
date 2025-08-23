@@ -4,9 +4,8 @@ from .users import User, UserRole
 from .metadata import MetaDataGroup, MetaData
 from .categories import Category
 from .products import (
+    ProductInstance,
     Product,
-    ProductSpecification,
-    ProductSpecificationType,
     ProductVariant,
     ProductVariantType,
 )
@@ -24,9 +23,8 @@ __all__ = [
     "MetaData",
     "MetaDataGroup",
     "Category",
+    'ProductInstance',
     "Product",
-    "ProductSpecification",
-    "ProductSpecificationType",
     "ProductVariant",
     "ProductVariantType",
     "Cart",

@@ -1,4 +1,8 @@
-from fastapi import HTTPException, UploadFile, Request
+from fastapi import (
+    HTTPException,
+    UploadFile,
+    Request
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from sqlalchemy import select, func
@@ -6,7 +10,12 @@ from sqlalchemy.orm import selectinload
 import json
 from slugify import slugify
 
-from app.models import Product, Conf, ConfType, ProductVariant
+from app.models import (
+    Product,
+    Conf,
+    ConfType,
+    ProductVariant
+)
 from app.schemas import (
     ProductList,
     ProductDetail,
@@ -18,8 +27,13 @@ from app.schemas import (
     ProductIn,
     ProductVariantsListAdmin,
     ProductVariantListView,
+    Variant,
+    VariantProduct,
 )
-from app.utils import save_product_image, delete_media_file
+from app.utils import (
+    save_product_image,
+    delete_media_file
+)
 
 
 async def get_products_admin(page: int, session: AsyncSession) -> ProductListAdmin:
@@ -27,21 +41,14 @@ async def get_products_admin(page: int, session: AsyncSession) -> ProductListAdm
     total_result = await session.execute(total_stmt)
     total = total_result.scalar_one()
     stmt = (
-        select(Product, func.count(ProductVariant.id).label("variants_count"))
-        .join(ProductVariant, ProductVariant.product_id == Product.id, isouter=True)
-        .group_by(Product.id)
+        select(Product)
         .order_by(-Product.id)
         .offset((page - 1) * 25)
         .limit(25)
     )
     result = await session.execute(stmt)
-    rows = result.all()
-    products = [
-        ProductListView.model_validate(
-            {**product.__dict__, "variants_count": variants_count}
-        )
-        for product, variants_count in rows
-    ]
+    products = result.scalars().all()
+
     return ProductListAdmin(
         data=[ProductListView.model_validate(product) for product in products],
         total=total,
@@ -94,6 +101,8 @@ async def add_product_admin(
         is_top=validated.is_top,
         slug_en=slugify(validated.name_en),
         slug_ro=slugify(validated.name_ro),
+        variant_id=validated.variant_id,
+        instance_id=validated.instance_id,
         main_image=image_paths[0],
         extra_image_1=image_paths[1],
         extra_image_2=image_paths[2],
@@ -308,12 +317,56 @@ async def get_product(request: Request, slug: str, lang: str, session: AsyncSess
     product = product_result.scalar_one_or_none()
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
+
+    variant_products_stmt = (
+        select(Product)
+        .where(Product.instance_id == product.instance_id)
+        .options(
+            selectinload(Product.variant).
+            selectinload(ProductVariant.variant_type)
+        )
+    )
+    variant_products_result = await session.execute(variant_products_stmt)
+    variant_products = variant_products_result.scalars().all()
+
+    variants: List[Variant] = []
+    for variant_product in variant_products:
+        if variant_product.variant:
+            variant_type_name = getattr(
+                variant_product.variant.variant_type,
+                f"name_{lang}",
+                variant_product.variant.variant_type.name_en
+            )
+
+            existing_variant = next((v for v in variants if v.variant_type_name == variant_type_name), None)
+            if existing_variant is None:
+                variant = Variant(
+                    variant_type_name=variant_type_name,
+                    products=[
+                        VariantProduct(
+                            variant_name=getattr(variant_product.variant, f"name_{lang}", variant_product.variant.name_en),
+                            slug=getattr(variant_product, f"slug_{lang}", variant_product.slug_en),
+                        )
+                    ]
+                )
+                variants.append(variant)
+            else:
+                existing_variant.products.append(
+                    VariantProduct(
+                        variant_name=getattr(variant_product.variant, f"name_{lang}", variant_product.variant.name_en),
+                        slug=getattr(variant_product, f"slug_{lang}", variant_product.slug_en),
+                    )
+                )
+
     base_url = str(request.base_url)
-    images: List[str] = [f"{base_url}{product.main_image}"]
+    images: List[str] = []
+    if product.main_image:
+        images.append(f"{base_url}{product.main_image}")
     for i in range(1, 7):
         extra_image = getattr(product, f"extra_image_{i}", None)
         if extra_image:
             images.append(f"{base_url}{extra_image}")
+
     return ProductDetail(
         id=product.id,
         name=getattr(product, f"name_{lang}", product.name_en),
@@ -325,4 +378,5 @@ async def get_product(request: Request, slug: str, lang: str, session: AsyncSess
             name=getattr(product.category, f"name_{lang}", product.category.name_en),
             slug=getattr(product.category, f"slug_{lang}", product.category.slug_en),
         ),
+        variants=variants
     )

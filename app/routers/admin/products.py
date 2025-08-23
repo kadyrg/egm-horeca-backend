@@ -13,7 +13,6 @@ from app.crud import (
 from app.schemas import (
     ProductListAdmin,
     StatusRes,
-    ProductListView,
     ProductVariantsListAdmin,
 )
 
@@ -96,3 +95,4 @@ async def _get_product_variants_admin(
     session: AsyncSession = Depends(get_db_session),
 ):
     return await get_product_variants_admin(page, product_id, session)
+

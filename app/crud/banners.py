@@ -9,14 +9,14 @@ from app.utils import save_banner_image, delete_media_file
 
 # Admin
 
-async def add_banner(image: UploadFile, session: AsyncSession) -> BannerListView:
+async def add_banner(image: UploadFile, session: AsyncSession) -> StatusRes:
     image_bytes = await image.read()
     image_path=save_banner_image(image_bytes)
 
     banner = Banner(image=image_path)
     session.add(banner)
     await session.commit()
-    return BannerListView.model_validate(banner)
+    return StatusRes(status="success", message="Added banner")
 
 async def get_banners_admin(page: int, session: AsyncSession) -> BannerListAdmin:
     total_stmt = select(func.count(Banner.id))
@@ -55,9 +55,9 @@ async def delete_banner_admin(category_id: int, session: AsyncSession) -> Status
 
 
 async def update_banner_admin(
-    id: int, image: UploadFile | None, session: AsyncSession
-) -> BannerListView:
-    stmt = select(Banner).where(Banner.id == id)
+    banner_id: int, image: UploadFile | None, session: AsyncSession
+) -> StatusRes:
+    stmt = select(Banner).where(Banner.id == banner_id)
     result = await session.execute(stmt)
     banner = result.scalar_one_or_none()
     if banner is None:
@@ -71,7 +71,7 @@ async def update_banner_admin(
     await session.commit()
     if image_to_delete:
         delete_media_file(image_to_delete)
-    return BannerListView.model_validate(banner)
+    return StatusRes(status="success", message="Banner updated successfully")
 
 
 # Client
