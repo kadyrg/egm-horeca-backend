@@ -9,6 +9,7 @@ class CategoryList(BaseModel):
     id: int
     name: str
     slug: str
+    image: str
 
 
 # Admin

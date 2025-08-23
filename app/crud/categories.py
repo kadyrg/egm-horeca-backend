@@ -124,15 +124,17 @@ async def update_category_admin(
 # Client
 
 
-async def get_categories(lang: str, session: AsyncSession) -> List[CategoryList]:
+async def get_categories(request: Request, lang: str, session: AsyncSession) -> List[CategoryList]:
     stmt = select(Category)
     result = await session.execute(stmt)
     categories = result.scalars().all()
+    base_url = str(request.base_url)
     return [
         CategoryList(
             id=category.id,
             name=getattr(category, f"name_{lang}"),
             slug=getattr(category, f"slug_{lang}"),
+            image=f"{base_url}{category.image}"
         )
         for category in categories
     ]

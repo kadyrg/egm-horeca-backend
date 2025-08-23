@@ -55,7 +55,7 @@ def save_category_image(image_bytes: bytes) -> str:
 
 
 BANNER_TARGET_WIDTH = 1920
-BANNER_TARGET_HEIGHT = 512
+BANNER_TARGET_HEIGHT = 640
 
 def save_banner_image(image_bytes: bytes) -> str:
     img = Image.open(BytesIO(image_bytes))

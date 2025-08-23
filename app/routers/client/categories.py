@@ -13,9 +13,10 @@ router = APIRouter(prefix="/categories", tags=["Categories"])
 
 @router.get("", response_model=List[CategoryList])
 async def _get_categories(
+    request: Request,
     lang: str = Depends(lang_dep), session: AsyncSession = Depends(get_db_session)
 ):
-    return await get_categories(lang, session)
+    return await get_categories(request, lang, session)
 
 
 @router.get("/{slug}", response_model=CategoryDetail)
