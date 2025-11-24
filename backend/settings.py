@@ -20,7 +20,8 @@ ALLOWED_HOSTS = [
     "backend.egmhoreca.local",
     'localhost',
     'admin.egmhoreca.ro',
-    '176.223.120.224',
+    'egmhoreca.ro',
+    'www.egnhoreca.ro',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -28,7 +29,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'https://admin.egmhoreca.ro',
     'https://www.admin.egmhoreca.ro',
-    'http://176.223.120.224:8000'
+    'https://egmhoreca.ro',
+    'https://www.egnhoreca.ro',
 ]
 
 INSTALLED_APPS = [
