@@ -5,3 +5,5 @@ Pillow
 httpx
 python-decouple
 stripe
+whitenoise
+gunicorn

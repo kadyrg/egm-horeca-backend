@@ -17,16 +17,16 @@ STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
 SECRET_KEY = 'django-insecure-qopwi%4*rf!@%+4%3cs^c&!j%aanh8ac%hr@)*)s-y8y(ffjcg'
 
 ALLOWED_HOSTS = [
+    'egmhoreca.local',
     "backend.egmhoreca.local",
-    'localhost',
     'admin.egmhoreca.ro',
     'egmhoreca.ro',
     'www.egnhoreca.ro',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://egmhoreca.local',
     "https://backend.egmhoreca.local",
-    'http://localhost:8000',
     'https://admin.egmhoreca.ro',
     'https://www.admin.egmhoreca.ro',
     'https://egmhoreca.ro',
