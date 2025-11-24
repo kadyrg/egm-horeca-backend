@@ -1,0 +1,7 @@
+django
+psycopg
+djangorestframework
+Pillow
+httpx
+python-decouple
+stripe
