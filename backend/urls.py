@@ -19,7 +19,7 @@ router.register(r'sub_banners', SubBannerViewSet, basename='sub_banners')
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('/admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     path("api/create-checkout-session/", create_checkout_session),
     path("api/payments/webhook/", stripe_webhook),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
