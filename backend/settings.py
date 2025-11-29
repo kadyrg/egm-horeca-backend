@@ -69,10 +69,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://egmhoreca.local",
-    "http://your-nextjs-domain.local",
-]
+CORS_ALLOWED_ORIGINS = ["*"]
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
