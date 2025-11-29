@@ -8,6 +8,9 @@ from payments.views import create_checkout_session, stripe_webhook
 from categories.views import CategoryViewSet
 from products.views import ProductViewSet
 from banners.views import BannerViewSet, SubBannerViewSet
+from translations.views import TranslationViewSet
+from contacts.views import ContactViewSet
+from legal.views import LegalViewSet
 
 
 router = routers.DefaultRouter()
@@ -16,6 +19,9 @@ router.register(r'categories', CategoryViewSet, basename='categories')
 router.register(r'products', ProductViewSet, basename='products')
 router.register(r'banners', BannerViewSet, basename='banners')
 router.register(r'sub_banners', SubBannerViewSet, basename='sub_banners')
+router.register(r'translations', TranslationViewSet, basename='translations')
+router.register(r'contacts', ContactViewSet, basename='contacts')
+router.register(r'legals', LegalViewSet, basename='legals')
 
 urlpatterns = [
     path('api/', include(router.urls)),

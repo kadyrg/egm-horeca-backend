@@ -66,6 +66,13 @@ class Banner(models.Model):
         help_text='min: 4, max: 7. ex: #0000ff'
     )
     order = models.PositiveIntegerField(verbose_name="Order number", null=False, blank=False)
+    link = models.CharField(
+        verbose_name="Link",
+        max_length=255,
+        null=False,
+        blank=False,
+        help_text='link to some page'
+    )
 
     class Meta:
         verbose_name = "banner"
@@ -138,6 +145,13 @@ class SubBanner(models.Model):
         help_text='min: 4, max: 7. ex: #0000ff'
     )
     order = models.PositiveIntegerField(verbose_name="Order number", null=False, blank=False)
+    link = models.CharField(
+        verbose_name="Link",
+        max_length=255,
+        null=False,
+        blank=False,
+        help_text='link to some page'
+    )
 
     class Meta:
         verbose_name = "sub-banner"

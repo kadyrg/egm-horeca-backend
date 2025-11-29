@@ -14,7 +14,8 @@ class BannerAdmin(admin.ModelAdmin):
         'text_color',
         'button_color',
         'button_text_color',
-        'order'
+        'order',
+        'link'
     )
     list_editable = (
         'title_en',
@@ -25,7 +26,8 @@ class BannerAdmin(admin.ModelAdmin):
         'text_color',
         'button_color',
         'button_text_color',
-        'order'
+        'order',
+        'link'
     )
 
 admin.site.register(Banner,BannerAdmin)
@@ -43,7 +45,8 @@ class SubBannerAdmin(admin.ModelAdmin):
         'text_color',
         'button_color',
         'button_text_color',
-        'order'
+        'order',
+        'link'
     )
     list_editable = (
         'title_en',
@@ -54,7 +57,8 @@ class SubBannerAdmin(admin.ModelAdmin):
         'text_color',
         'button_color',
         'button_text_color',
-        'order'
+        'order',
+        'link'
     )
 
 admin.site.register(SubBanner,SubBannerAdmin)

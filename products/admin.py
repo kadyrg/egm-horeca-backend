@@ -26,7 +26,9 @@ class ProductAdmin(admin.ModelAdmin):
         'main_image',
         'is_active',
         'category',
+        'slug'
     )
+    readonly_fields = ('slug', )
     list_editable = (
         'title_en',
         'title_ro',

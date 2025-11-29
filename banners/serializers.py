@@ -9,7 +9,17 @@ class BannerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Banner
-        fields = ['id', 'title', 'sub_title', 'image', 'button_color', 'text_color', 'button_text_color', 'order']
+        fields = [
+            'id',
+            'title',
+            'sub_title',
+            'image',
+            'button_color',
+            'text_color',
+            'button_text_color',
+            'order',
+            'link'
+        ]
 
     def get_title(self, obj):
         request = self.context.get('request')
@@ -30,7 +40,17 @@ class SubBannerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubBanner
-        fields = ['id', 'title', 'sub_title', 'image', 'button_color', 'text_color', 'button_text_color', 'order']
+        fields = [
+            'id',
+            'title',
+            'sub_title',
+            'image',
+            'button_color',
+            'text_color',
+            'button_text_color',
+            'order',
+            'link'
+        ]
 
     def get_title(self, obj):
         request = self.context.get('request')

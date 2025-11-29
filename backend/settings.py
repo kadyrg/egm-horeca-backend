@@ -14,6 +14,8 @@ STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
 STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY")
 STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
 
+X_FRAME_OPTIONS = "ALLOWALL"
+
 SECRET_KEY = 'django-insecure-qopwi%4*rf!@%+4%3cs^c&!j%aanh8ac%hr@)*)s-y8y(ffjcg'
 
 ALLOWED_HOSTS = [
@@ -44,14 +46,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'corsheaders',
 
     'banners',
     'categories',
     'products',
     'orders',
+    'translations',
+    'contacts',
+    'legal'
 ]
 
 MIDDLEWARE = [
+"corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -60,6 +67,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://egmhoreca.local",
+    "http://your-nextjs-domain.local",
 ]
 
 REST_FRAMEWORK = {
