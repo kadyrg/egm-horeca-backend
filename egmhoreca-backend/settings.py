@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'contacts',
     'legal'
 ]
-d
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
