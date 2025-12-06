@@ -20,7 +20,7 @@ SECRET_KEY = 'django-insecure-qopwi%4*rf!@%+4%3cs^c&!j%aanh8ac%hr@)*)s-y8y(ffjcg
 
 ALLOWED_HOSTS = [
     'egmhoreca.local',
-    "backend.egmhoreca.local",
+    "egmhoreca-backend.egmhoreca.local",
     'admin.egmhoreca.ro',
     'egmhoreca.ro',
     'www.egmhoreca.ro',
@@ -81,12 +81,12 @@ CORS_ALLOWED_ORIGINS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
-        "backend.renderers.CamelCaseJSONRenderer",
+        "egmhoreca-backend.renderers.CamelCaseJSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ),
 }
 
-ROOT_URLCONF = 'backend.urls'
+ROOT_URLCONF = 'egmhoreca-backend.urls'
 
 TEMPLATES = [
     {
@@ -103,7 +103,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+WSGI_APPLICATION = 'egmhoreca-backend.wsgi.application'
 
 DATABASES = {
     'default': {
