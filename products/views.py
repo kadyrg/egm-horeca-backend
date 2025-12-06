@@ -7,7 +7,6 @@ from .models import Product
 from .serializers import (
     ProductPageMetadataSerializer,
     ProductDetailSerializer,
-    ProductSlugSerializer,
     ProductListSerializer
 )
 
@@ -21,12 +20,6 @@ class ProductViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
     def metadata(self, request, slug=None):
         product = get_object_or_404(Product, slug=slug)
         serializer = ProductPageMetadataSerializer(product, context={"request": request})
-        return Response(serializer.data)
-
-    @action(detail=False, methods=["get"], url_path="slugs")
-    def slugs(self, request):
-        product = Product.objects.all()
-        serializer = ProductSlugSerializer(product, context={"request": request}, many=True)
         return Response(serializer.data)
 
     def get_serializer_class(self):

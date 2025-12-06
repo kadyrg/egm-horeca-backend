@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 
+
 class Banner(models.Model):
     title_en = models.CharField(
         verbose_name="English title",

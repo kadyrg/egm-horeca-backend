@@ -6,7 +6,7 @@ from django.db import transaction
 
 from backend import settings
 
-#
+
 # @receiver(post_save, sender=Category)
 # def send_slug_to_frontend(sender, instance, created, **kwargs):
 #     def _revalidate():

@@ -7,7 +7,50 @@ from django.db import transaction
 from backend import settings
 from .models import Product, ProductImage
 
-#
+
+@receiver(post_delete, sender=Product)
+def delete_image(sender, instance, **kwargs):
+    if instance.main_image:
+        if os.path.isfile(instance.main_image.path):
+            os.remove(instance.main_image.path)
+
+
+@receiver(pre_save, sender=Product)
+def delete_old_image_on_update(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+    try:
+        old_image = Product.objects.get(pk=instance.pk).main_image
+    except Product.DoesNotExist:
+        return False
+
+    new_image = instance.main_image
+    if old_image and old_image != new_image:
+        if os.path.isfile(old_image.path):
+            os.remove(old_image.path)
+
+@receiver(post_delete, sender=ProductImage)
+def delete_file(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+
+@receiver(pre_save, sender=ProductImage)
+def delete_old_file_on_update(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+    try:
+        old_file = ProductImage.objects.get(pk=instance.pk).image
+    except ProductImage.DoesNotExist:
+        return False
+
+    new_file = instance.file
+    if old_file and old_file != new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)
+
+
 # @receiver(pre_save, sender=Product)
 # def send_slug_to_frontend(sender, instance, **kwargs):
 #     def _revalidate():
@@ -21,6 +64,7 @@ from .models import Product, ProductImage
 #
 #     transaction.on_commit(_revalidate)
 #
+
 # @receiver(post_save, sender=Product)
 # def send_product_slug_to_frontend(sender, instance, created, **kwargs):
 #     def _send():
@@ -45,46 +89,3 @@ from .models import Product, ProductImage
 #             print(f"Failed to send product revalidation info: {e}")
 #
 #     transaction.on_commit(_send)
-#
-# @receiver(post_delete, sender=Product)
-# def delete_image(sender, instance, **kwargs):
-#     if instance.main_image:
-#         if os.path.isfile(instance.main_image.path):
-#             os.remove(instance.main_image.path)
-#
-#
-# @receiver(pre_save, sender=Product)
-# def delete_old_image_on_update(sender, instance, **kwargs):
-#     if not instance.pk:
-#         return False
-#     try:
-#         old_image = Product.objects.get(pk=instance.pk).main_image
-#     except Product.DoesNotExist:
-#         return False
-#
-#     new_image = instance.main_image
-#     if old_image and old_image != new_image:
-#         if os.path.isfile(old_image.path):
-#             os.remove(old_image.path)
-#
-#
-# @receiver(post_delete, sender=ProductImage)
-# def delete_file(sender, instance, **kwargs):
-#     if instance.file:
-#         if os.path.isfile(instance.file.path):
-#             os.remove(instance.file.path)
-#
-#
-# @receiver(pre_save, sender=ProductImage)
-# def delete_old_file_on_update(sender, instance, **kwargs):
-#     if not instance.pk:
-#         return False
-#     try:
-#         old_file = ProductImage.objects.get(pk=instance.pk).image
-#     except ProductImage.DoesNotExist:
-#         return False
-#
-#     new_file = instance.file
-#     if old_file and old_file != new_file:
-#         if os.path.isfile(old_file.path):
-#             os.remove(old_file.path)

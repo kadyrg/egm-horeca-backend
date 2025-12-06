@@ -40,11 +40,11 @@ class Product(models.Model):
     )
     brand_title = models.CharField(
         verbose_name="Brand title",
-        validators=[MinLengthValidator(5)],
+        validators=[MinLengthValidator(1)],
         max_length=150,
         null=True,
         blank=True,
-        help_text='min: 5, max: 150'
+        help_text='min: 1, max: 150'
     )
     slug = models.SlugField(
         verbose_name="Slug",
@@ -92,6 +92,28 @@ class Product(models.Model):
         null=False,
         blank=False,
         related_name="products"
+    )
+    order = models.PositiveIntegerField(
+        verbose_name="Order number",
+        null=False,
+        blank=False,
+        help_text='Order number'
+    )
+    created_at = models.DateTimeField(
+        verbose_name="Created at",
+        auto_now_add=True,
+        null=False,
+        blank=False,
+        editable=False,
+        help_text='Created datetime'
+    )
+    updated_at = models.DateTimeField(
+        verbose_name="Updated at",
+        auto_now=True,
+        null=False,
+        blank=False,
+        editable=False,
+        help_text='Updated datetime'
     )
 
     def save(self, *args, **kwargs):
@@ -149,19 +171,19 @@ class ProductAttribute(models.Model):
     )
     title_en = models.CharField(
         verbose_name="English title",
-        validators=[MinLengthValidator(5)],
+        validators=[MinLengthValidator(1)],
         max_length=30,
         null=False,
         blank=False,
-        help_text='min: 5, max: 30'
+        help_text='min: 1, max: 30'
     )
     title_ro = models.CharField(
         verbose_name="Romanian title",
-        validators=[MinLengthValidator(5)],
+        validators=[MinLengthValidator(1)],
         max_length=30,
         null=False,
         blank=False,
-        help_text='min: 5, max: 30'
+        help_text='min: 1, max: 30'
     )
 
     def __str__(self):
@@ -185,19 +207,19 @@ class ProductAttributeItem(models.Model):
     )
     title_en = models.CharField(
         verbose_name="English title",
-        validators=[MinLengthValidator(5)],
+        validators=[MinLengthValidator(1)],
         max_length=30,
         null=False,
         blank=False,
-        help_text='min: 5, max: 30'
+        help_text='min: 1, max: 30'
     )
     title_ro = models.CharField(
         verbose_name="Romanian title",
-        validators=[MinLengthValidator(5)],
+        validators=[MinLengthValidator(1)],
         max_length=30,
         null=False,
         blank=False,
-        help_text='min: 5, max: 30'
+        help_text='min: 1, max: 30'
     )
     old_price = models.DecimalField(
         verbose_name="Old price",

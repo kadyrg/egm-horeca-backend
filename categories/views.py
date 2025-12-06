@@ -8,7 +8,6 @@ from .models import Category, SubCategory
 from .serializers import (
     CategorySerializer,
     CategoryPageMetadataSerializer,
-    CategorySlugSerializer,
     SubCategorySerializer
 )
 
@@ -22,12 +21,6 @@ class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets
     def metadata(self, request, slug=None):
         category = get_object_or_404(Category, slug=slug)
         serializer = CategoryPageMetadataSerializer(category, context={"request": request})
-        return Response(serializer.data)
-
-    @action(detail=False, methods=["get"], url_path="slugs")
-    def slugs(self, request):
-        category = Category.objects.all()
-        serializer = CategorySlugSerializer(category, context={"request": request}, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=["get"], url_path="products")

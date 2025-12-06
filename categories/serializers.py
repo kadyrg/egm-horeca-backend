@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from products.serializers import ProductSerializer
+from products.serializers import ProductListSerializer
 from .models import Category, SubCategory
 
 
@@ -39,15 +39,9 @@ class CategoryPageMetadataSerializer(serializers.ModelSerializer):
         return obj.meta_title_ro if 'ro' in lang else obj.meta_title_en
 
 
-class CategorySlugSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['slug']
-
-
 class SubCategorySerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
-    products = ProductSerializer(many=True)
+    products = ProductListSerializer(many=True)
 
     class Meta:
         model = SubCategory

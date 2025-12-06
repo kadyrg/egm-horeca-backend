@@ -58,7 +58,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-"corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,7 +69,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = ["*"]
+CORS_ALLOWED_ORIGINS = [
+    'https://egmhoreca.local',
+    "https://backend.egmhoreca.local",
+    'https://admin.egmhoreca.ro',
+    'https://www.admin.egmhoreca.ro',
+    'https://egmhoreca.ro',
+    'https://www.egmhoreca.ro',
+    'http://localhost:8000',
+]
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
@@ -100,11 +108,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'egmhoreca',
-        'USER': 'avnadmin',
+        'NAME': config("DB_NAME"),
+        'USER': config("DB_USER"),
         'PASSWORD': config("DB_PASS"),
-        'HOST': 'delivery-kadyr-d419.l.aivencloud.com',
-        'PORT': '10201',
+        'HOST': config("DB_HOST"),
+        'PORT': config("DB_PORT"),
     }
 }
 

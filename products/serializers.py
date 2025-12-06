@@ -3,19 +3,6 @@ from rest_framework import serializers
 from .models import Product, ProductImage, ProductAttribute, ProductAttributeItem
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    title = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Product
-        fields = ['id', "title", 'main_image', 'slug', "price", 'old_price']
-
-    def get_title(self, obj):
-        request = self.context.get('request')
-        lang = request.headers.get('Accept-Language', 'en').lower() if request else 'en'
-
-        return obj.title_ro if 'ro' in lang else obj.title_en
-
 
 class ProductPageMetadataSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
@@ -109,10 +96,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
 class ProductListSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
+    category_slug = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['id', 'title', 'main_image', 'slug', 'price', 'old_price', 'brand_title']
+        fields = ['id', 'title', 'main_image', 'slug', 'price', 'old_price', 'brand_title', 'category_slug']
 
     def get_title(self, obj):
         request = self.context.get('request')
@@ -120,13 +108,6 @@ class ProductListSerializer(serializers.ModelSerializer):
 
         return obj.title_ro if 'ro' in lang else obj.title_en
 
-
-class ProductSlugSerializer(serializers.ModelSerializer):
-    category_slug = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Product
-        fields = ['slug', 'category_slug']
-
-    def get_category_slug(self, obj):
+    @staticmethod
+    def get_category_slug(obj):
         return obj.category.category.slug

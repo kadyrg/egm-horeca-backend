@@ -15,6 +15,7 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = (ProductImageInline, ProductAttributeInline)
     list_display = (
         'id',
+        'order',
         'title_en',
         'title_ro',
         'description_en',
@@ -28,8 +29,9 @@ class ProductAdmin(admin.ModelAdmin):
         'category',
         'slug'
     )
-    readonly_fields = ('slug', )
+    readonly_fields = ('slug', 'created_at', 'updated_at')
     list_editable = (
+        'order',
         'title_en',
         'title_ro',
         'description_en',
@@ -42,7 +44,32 @@ class ProductAdmin(admin.ModelAdmin):
         'is_active',
         'category',
     )
-    readonly_fields = ('slug', )
+    ordering = ('order',)
+    search_fields = ('title_en', 'title_ro', 'description_en', 'description_ro')
+    list_filter = ('is_active', 'category')
+    fieldsets = (
+        ('Basic Info', {
+            'fields': (
+                'title_en',
+                'title_ro',
+                'description_en',
+                'description_ro',
+                'old_price',
+                'price',
+                'stock',
+                'main_image',
+                'is_active',
+                'category'
+            ),
+        }),
+        ('Ordering', {
+            'fields': ('order',),
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
 
 admin.site.register(Product, ProductAdmin)
 
@@ -56,14 +83,50 @@ class ProductAttributeAdmin(admin.ModelAdmin):
     inlines = (ProductAttributeItemInline,)
     list_display = (
         'id',
+        'product',
         'title_en',
         'title_ro',
+    )
+    list_editable = (
         'product',
+        'title_en',
+        'title_ro',
+    )
+    search_fields = ('title_en', 'title_ro')
+    list_filter = ('product', )
+    fieldsets = (
+        ('Basic Info', {
+            'fields': ('title_en', 'title_ro', 'product'),
+        }),
+    )
+
+admin.site.register(ProductAttribute, ProductAttributeAdmin)
+
+
+class ProductAttributeItemAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'title_en',
+        'title_ro',
+        'attribute',
+        'old_price',
+        'price',
+        'stock',
     )
     list_editable = (
         'title_en',
         'title_ro',
-        'product',
+        'attribute',
+        'old_price',
+        'price',
+        'stock',
+    )
+    search_fields = ('title_en', 'title_ro')
+    list_filter = ('attribute', )
+    fieldsets = (
+        ('Basic Info', {
+            'fields': ('title_en', 'title_ro', 'attribute', 'old_price', 'price', 'stock'),
+        }),
     )
 
-admin.site.register(ProductAttribute, ProductAttributeAdmin)
+admin.site.register(ProductAttributeItem, ProductAttributeItemAdmin)

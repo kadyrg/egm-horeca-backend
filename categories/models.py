@@ -52,7 +52,12 @@ class Category(models.Model):
         blank=False,
         help_text='min: 25, max: 150'
     )
-    order = models.PositiveIntegerField(verbose_name="Order number", null=False, blank=False)
+    order = models.PositiveIntegerField(
+        verbose_name="Order number",
+        null=False,
+        blank=False,
+        help_text='Order number'
+    )
     slug = models.SlugField(
         verbose_name="Slug",
         validators=[MinLengthValidator(2)],
@@ -62,6 +67,22 @@ class Category(models.Model):
         blank=False,
         editable=False,
         help_text='min: 2, max: 25'
+    )
+    created_at = models.DateTimeField(
+        verbose_name="Created at",
+        auto_now_add=True,
+        null=False,
+        blank=False,
+        editable=False,
+        help_text='Created datetime'
+    )
+    updated_at = models.DateTimeField(
+        verbose_name="Updated at",
+        auto_now=True,
+        null=False,
+        blank=False,
+        editable=False,
+        help_text='Updated datetime'
     )
 
     def save(self, *args, **kwargs):
@@ -110,6 +131,22 @@ class SubCategory(models.Model):
         help_text='min: 2, max: 30'
     )
     order = models.PositiveIntegerField(verbose_name="Order number", null=False, blank=False)
+    created_at = models.DateTimeField(
+        verbose_name="Created at",
+        auto_now_add=True,
+        null=False,
+        blank=False,
+        editable=False,
+        help_text='Created datetime'
+    )
+    updated_at = models.DateTimeField(
+        verbose_name="Updated at",
+        auto_now=True,
+        null=False,
+        blank=False,
+        editable=False,
+        help_text='Updated datetime'
+    )
 
     def __str__(self):
         return self.title_en
