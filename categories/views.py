@@ -12,7 +12,7 @@ from .serializers import (
 )
 
 
-class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class CategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Category.objects.all().order_by('order')
     lookup_field = 'slug'
     serializer_class = CategorySerializer
@@ -23,8 +23,8 @@ class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets
         serializer = CategoryPageMetadataSerializer(category, context={"request": request})
         return Response(serializer.data)
 
-    @action(detail=True, methods=["get"], url_path="products")
-    def products(self, request, slug=None):
+    @action(detail=True, methods=["get"], url_path="sub-categories")
+    def sub_categories(self, request, slug=None):
         category = get_object_or_404(Category, slug=slug)
         sub_categories = (
             SubCategory.objects.filter(category=category)

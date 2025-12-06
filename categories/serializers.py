@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from products.serializers import ProductListSerializer
+from products.serializers import ProductSerializer
 from .models import Category, SubCategory
 
 
@@ -41,7 +41,7 @@ class CategoryPageMetadataSerializer(serializers.ModelSerializer):
 
 class SubCategorySerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
-    products = ProductListSerializer(many=True)
+    products = ProductSerializer(many=True)
 
     class Meta:
         model = SubCategory

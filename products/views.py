@@ -7,7 +7,7 @@ from .models import Product
 from .serializers import (
     ProductPageMetadataSerializer,
     ProductDetailSerializer,
-    ProductListSerializer
+    ProductSerializer
 )
 
 
@@ -22,8 +22,18 @@ class ProductViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
         serializer = ProductPageMetadataSerializer(product, context={"request": request})
         return Response(serializer.data)
 
+    @action(detail=True, methods=["get"], url_path="similar")
+    def similar(self, request, slug=None):
+        product = get_object_or_404(Product, slug=slug)
+        similar_products = (
+            Product.objects.filter(is_active=True, category=product.category)
+            .exclude(id=product.pk)
+            .order_by('?')[:6]
+        )
+        serializer = ProductSerializer(similar_products, many=True, context={"request": request})
+        return Response(serializer.data)
+
     def get_serializer_class(self):
         if self.action == "retrieve":
             return ProductDetailSerializer
-        if self.action == "list":
-            return ProductListSerializer
+        return ProductSerializer

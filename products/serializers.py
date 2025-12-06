@@ -94,7 +94,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         return obj.description_ro if 'ro' in lang else obj.description_en
 
 
-class ProductListSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
     category_slug = serializers.SerializerMethodField()
 
