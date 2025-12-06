@@ -19,22 +19,29 @@ X_FRAME_OPTIONS = "ALLOWALL"
 SECRET_KEY = 'django-insecure-qopwi%4*rf!@%+4%3cs^c&!j%aanh8ac%hr@)*)s-y8y(ffjcg'
 
 ALLOWED_HOSTS = [
-    'egmhoreca.local',
-    "egmhoreca-backend.egmhoreca.local",
-    'admin.egmhoreca.ro',
     'egmhoreca.ro',
     'www.egmhoreca.ro',
-    'localhost'
+
+    'backend.egmhoreca.ro',
+    'www.backend.egmhoreca.ro',
+
+    'localhost',
+
+    'egmhoreca.local',
+    "backend.egmhoreca.local",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://egmhoreca.local',
-    "https://backend.egmhoreca.local",
-    'https://admin.egmhoreca.ro',
-    'https://www.admin.egmhoreca.ro',
     'https://egmhoreca.ro',
     'https://www.egmhoreca.ro',
+
+    'https://backend.egmhoreca.ro',
+    'https://www.backend.egmhoreca.ro',
+
     'http://localhost:8000',
+
+    'https://egmhoreca.local',
+    "https://backend.egmhoreca.local",
 ]
 
 INSTALLED_APPS = [
@@ -70,13 +77,16 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'https://egmhoreca.local',
-    "https://backend.egmhoreca.local",
-    'https://admin.egmhoreca.ro',
-    'https://www.admin.egmhoreca.ro',
     'https://egmhoreca.ro',
     'https://www.egmhoreca.ro',
+
+    'https://backend.egmhoreca.ro',
+    'https://www.backend.egmhoreca.ro',
+
     'http://localhost:8000',
+
+    'https://egmhoreca.local',
+    "https://backend.egmhoreca.local",
 ]
 
 REST_FRAMEWORK = {
